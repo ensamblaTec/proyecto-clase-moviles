@@ -12,11 +12,11 @@ class DashboardScreen extends StatelessWidget {
         title: const Text('Bienvenidos :)'),
         centerTitle: true,
       ),
-      drawer: createDrawer(),
+      drawer: createDrawer(context),
     );
   }
 
-  Widget createDrawer() {
+  Widget createDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         children: [
@@ -35,6 +35,14 @@ class DashboardScreen extends StatelessWidget {
             title: const Text('Fruit App'),
             subtitle: const Text('Carrousel'),
             onTap: () => {},
+          ),
+          ListTile(
+            leading:  const Icon(Icons.task_alt_outlined),
+            trailing: const Icon(Icons.chevron_right),
+            title: const Text('Task Manager'),
+            onTap: () {
+              Navigator.pushNamed(context, '/task');
+            },
           ),
           DayNightSwitcher(
             isDarkModeEnabled: GlobalValues.flagTheme.value,

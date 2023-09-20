@@ -8,28 +8,53 @@ class AddTask extends StatefulWidget {
 }
 
 class _AddTaskState extends State<AddTask> {
+  
   @override
   Widget build(BuildContext context) {
-    final TextEditingController txtConName = TextEditingController();
-    final txtNameTask = TextField(
-      controller: txtConName,
-    );
-    final TextEditingController txtConDesc = TextEditingController();
-    final txtDescTask = TextField(
-      controller: txtConName,
-    );
-    List<String> dropDownValues = <String>[
-      "Pendiente",
-      "En proceso",
-      "Completado",
+
+    TextEditingController txtConName = TextEditingController();
+    TextEditingController txtConDsc = TextEditingController();
+    String dropDownValue = "Pendiente";
+    List<String> dropDownValues = [
+      'Pendiente',
+      'Completado',
+      'En proceso'
     ];
-    String dropDownValue = dropDownValues.first;
-    DropdownButton statusTask = DropdownButton(
-      items: , 
-      onChanged: (value) {
-        
-      }, 
+    
+    final txtNameTask = TextFormField(
+      controller: txtConName,
     );
-    return Container();
+
+    final txtDscTask = TextFormField(
+      controller: txtConDsc,
+    );
+
+    final DropdownButton ddBStatus = DropdownButton(
+      value: dropDownValue,
+      items: dropDownValues.map(
+        (status) => DropdownMenuItem(
+          value: status,
+          child: Text(status)
+        )
+      ).toList(), 
+      onChanged: (value){
+        dropDownValue = value;
+        setState(() { });
+      }
+    );
+
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Add Task'),
+      ),
+      body: Column(
+        children: [
+          txtNameTask,
+          txtDscTask,
+          ddBStatus
+        ],
+      ),
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/agendadb.dart';
+import 'package:pmsn20232/models/task_model.dart';
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({super.key});
@@ -9,6 +10,9 @@ class TaskScreen extends StatefulWidget {
 }
 
 class _TaskScreenState extends State<TaskScreen> {
+
+  AgendaDB? agendaDB;
+
   @override
   void initState() {
     super.initState();
@@ -19,33 +23,34 @@ class _TaskScreenState extends State<TaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Task Manager'),
+        title: Text('Task Manager'),
         actions: [
           IconButton(
-            onPressed: () => {},
-            icon: const Icon(Icons.task)
+            onPressed: (){}, 
+            icon: Icon(Icons.task)
           )
         ],
       ),
       body: FutureBuilder(
-        future: AgendaDB.GetAllTask(),
+        future: agendaDB!.GETALLTASK(),
         builder: (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot){
-          if(snapshot.hasData){
+          if( snapshot.hasData ){
             return ListView.builder(
-                itemCount: 5,
-                // snapshot.data!.length,
-                itemBuilder: (BuildContext context, int index){
-                  return Text('data $index chachaChau!');
-                }
-              );
-          }
-          if(snapshot.hasError){
-            return const Center(
-              child: Text('Error'),
+              itemCount: 5 ,//snapshot.data!.length,
+              itemBuilder: (BuildContext context, int index){
+                return Text('hOLa');
+              }
             );
+          }else{
+            if( snapshot.hasError ){
+              return const Center(
+                child: Text('Error!'),
+              );
+            }else{
+              return CircularProgressIndicator();
+            }
           }
-          return CircularProgressIndicator();
-        },
+        }
       ),
     );
   }

@@ -1,6 +1,8 @@
 import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:flutter/material.dart';
-import 'package:pmsn20232/assets/global_values.dart';
+import 'package:pmsn20232/services/local_storage.dart';
+import 'package:pmsn20232/services/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatelessWidget {
   DashboardScreen({super.key});
@@ -17,6 +19,7 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget createDrawer(BuildContext context) {
+    final changeTheme = Provider.of<ThemeProvider>(context);
     return Drawer(
       child: ListView(
         children: [
@@ -45,11 +48,20 @@ class DashboardScreen extends StatelessWidget {
             },
           ),
           DayNightSwitcher(
-            isDarkModeEnabled: GlobalValues.flagTheme.value,
+            isDarkModeEnabled: changeTheme.isLightTheme,
             onStateChanged: (isDarkModeEnabled) {
-              GlobalValues.flagTheme.value = isDarkModeEnabled;
+              changeTheme.isLightTheme = isDarkModeEnabled;
+              LocalStorage.prefs.setBool('isThemeLight', isDarkModeEnabled);
             },
           ),
+          ListTile(
+                title: const Text("Sign Out"),
+                trailing: const Icon(Icons.exit_to_app),
+                onTap: () {
+                  Navigator.pushNamed(context, '/login');
+                  LocalStorage.prefs.setBool('isActiveSession', false);
+                },
+              ),
         ],
       ),
     );

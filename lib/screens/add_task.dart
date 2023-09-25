@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:pmsn20232/database/agendadb.dart';
+import 'package:pmsn20232/models/task_model.dart';
 
 class AddTask extends StatefulWidget {
-  const AddTask({super.key});
+  final TaskModel? taskModel;
+  const AddTask({super.key, this.taskModel});
 
   @override
   State<AddTask> createState() => _AddTaskState();
 }
 
 class _AddTaskState extends State<AddTask> {
-  
-  @override
-  Widget build(BuildContext context) {
 
+  
     TextEditingController txtConName = TextEditingController();
     TextEditingController txtConDsc = TextEditingController();
     String dropDownValue = "Pendiente";
@@ -20,14 +21,36 @@ class _AddTaskState extends State<AddTask> {
       'Completado',
       'En proceso'
     ];
+
+AgendaDB? agendaDB;
+@override
+void initState( ) {
+
+  super.initState();
+  agendaDB = AgendaDB();
+}
+
+  @override
+  Widget build(BuildContext context) {
+
     
     final txtNameTask = TextFormField(
+      decoration: const InputDecoration(
+        label: Text('Task Name'),
+        border: OutlineInputBorder()
+      ),
       controller: txtConName,
     );
 
     final txtDscTask = TextFormField(
+      decoration: const InputDecoration(
+        label: Text('Task Description'),
+        border: OutlineInputBorder()
+      ),
       controller: txtConDsc,
     );
+
+    const space = SizedBox(height: 10,);
 
     final DropdownButton ddBStatus = DropdownButton(
       value: dropDownValue,
@@ -37,23 +60,45 @@ class _AddTaskState extends State<AddTask> {
           child: Text(status)
         )
       ).toList(), 
-      onChanged: (value){
+      onChanged: (value) {
         dropDownValue = value;
         setState(() { });
       }
     );
 
+    final ElevatedButton btnGuardar = ElevatedButton(onPressed: () {
+      agendaDB!.INSERT('tblTareas', {
+        'nameTask': txtConName.text,
+        'dscTask' : txtConDsc.text,
+        'sttTask' : dropDownValue.substring(1,1),
+      }).then((value) {
+        var snackBar = SnackBar(
+          content: Text(value > 0 ? 'La inserción se ha completado' : 'La inserción ha fallado'),
+          showCloseIcon: true,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pop(context);
+      });
+    }, child: const Text('Save Task'));
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Task'),
+        title: const Text('Add Task'),
       ),
-      body: Column(
-        children: [
-          txtNameTask,
-          txtDscTask,
-          ddBStatus
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            txtNameTask,
+            space,
+            txtDscTask,
+            space,
+            ddBStatus,
+            space,
+            btnGuardar,
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pmsn20232/services/local_storage.dart';
+import 'package:pmsn20232/widgets/checkbox_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -8,88 +10,82 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  
+
   @override
   Widget build(BuildContext context) {
-    // recuperar los datos con controladores
-    TextEditingController txtConUser = TextEditingController();
-    final txtUser = TextField(
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
-      ),
-      controller: txtConUser,
-    );
-
-    TextEditingController txtConPass = TextEditingController();
-    final txtPass = TextField(
-      obscureText: true,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
-        ),
-      controller: txtConPass,
-    );
-
-    // container puede ser el equivalente a un div
-    final imgLogo = Opacity(
-      opacity: .2,
-      child: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage('https://w0.peakpx.com/wallpaper/389/270/HD-wallpaper-sword-world-cool-fantasy.jpg')
-            ),
-        ),
-      ),
-    );
-
-    final btnEntrar = FloatingActionButton.extended(
-      icon: const Icon(Icons.login),
-      label: const Text('Entrar'),
-      onPressed: 
-      (){
-        Navigator.pushNamed(context, '/dash');
-      }
-      );
-
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+    final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
+        // backgroundColor: const Color(0xFFDD969C),
+        body: Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
             opacity: .8,
             fit: BoxFit.fill,
-            image: NetworkImage('https://w0.peakpx.com/wallpaper/389/270/HD-wallpaper-sword-world-cool-fantasy.jpg')
-            ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 100.0),
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              // imgFondo,
-              Container(
-                height: 200,
-                padding: const EdgeInsets.all(30),
-                margin: const EdgeInsets.symmetric(horizontal: 30),
-                // color: const Color.fromARGB(255, 246, 246, 107),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey
-                ),
-                child: Column(
-                  // padding: const EdgeInsets.symmetric(horizontal: 30),
+            image: NetworkImage(
+                'https://w0.peakpx.com/wallpaper/389/270/HD-wallpaper-sword-world-cool-fantasy.jpg')),
+      ),
+      child: SafeArea(
+        child: Center(
+          child: SizedBox(
+            width: size.width * 0.76,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // username
+                const Text('Login Page',
+                    style: TextStyle(
+                      color: Color(0xFF221133),
+                      fontSize: 30,
+                    )),
+                _buildInputText(
+                    'email', TextInputType.emailAddress, emailController),
+                // pasword
+                _buildInputText('password', TextInputType.visiblePassword,
+                    passwordController,
+                    isPassword: true),
+                // Button
+                const SizedBox(height: 50),
+                Row(
                   children: [
-                    txtUser,
-                    const SizedBox(height: 10,),
-                    txtPass,
+                    const Text('Keep sign'),
+                    const CheckBoxWidget(),
+                    Expanded(
+                        child: ElevatedButton(
+                            onPressed: () {
+                              if ((emailController.text ==
+                                      "admin@example.com") &&
+                                  (passwordController.text == "1234")) {
+                                Navigator.pushNamed(context, '/dash');
+                              }
+                            },
+                            child: const Text('Login'))),
                   ],
-                ),
-              ),
-              Positioned(top: 200, child: imgLogo)
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: btnEntrar,
+    ));
+  }
+
+  TextField _buildInputText(name, inputType, controller, {isPassword = false}) {
+    return TextField(
+      controller: controller,
+      obscureText: isPassword,
+      keyboardType: inputType,
+      decoration: InputDecoration(
+          suffixIcon: isPassword
+              ? const Icon(Icons.remove_red_eye)
+              : const Icon(Icons.done),
+          labelText: name,
+          labelStyle:
+              const TextStyle(color: Colors.black, fontWeight: FontWeight.w900),
+          floatingLabelAlignment: FloatingLabelAlignment.start),
+      onChanged: (value) {},
     );
   }
 }

@@ -1,66 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:pmsn20232/assets/global_values.dart';
 import 'package:pmsn20232/assets/styles.dart';
 import 'package:pmsn20232/routes/routes.dart';
-import 'package:pmsn20232/screens/login_screen.dart'; // Aplicación Android
-// import 'package:flutter/cupertino.dart'; // Aplicación iOS
-void main() {
+import 'package:pmsn20232/screens/dashboard_screen.dart';
+import 'package:pmsn20232/screens/login_screen.dart';
+import 'package:pmsn20232/services/local_storage.dart';
+import 'package:pmsn20232/services/theme_provider.dart';
+import 'package:provider/provider.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await LocalStorage.configurePrefs();
+
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  bool isActive = false;
+
+  @override
+  void initState() {
+    if (LocalStorage.prefs.getBool('isActiveSession') != null) {
+      LocalStorage.prefs.getBool('isActiveSession') as bool == true 
+          ? isActive = true 
+          : isActive = false;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    /** 
-     * Contexto: La pantalla actual
-    */
-    return ValueListenableBuilder(
-      valueListenable: GlobalValues.flagTheme,
-      builder: (context, value, _) {
+    return ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      builder: (context, child) {
+        final changeTheme = Provider.of<ThemeProvider>(context);
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: const LoginScreen(),
           routes: getRoutes(),
-          theme: value ? StylesApp.darkTheme(context) : StylesApp.lightTheme(context)
-          );
-      }
+          theme: !changeTheme.isLightTheme 
+              ? StylesApp.lightTheme(context)
+              : StylesApp.darkTheme(context),
+          home: isActive ? DashboardScreen(): const LoginScreen(),
+        );
+      },
     );
   }
 }
-
-// import 'package:flutter/material.dart'; // Aplicación Android
-// // import 'package:flutter/cupertino.dart'; // Aplicación iOS
-// void main() {
-//   runApp(MainApp());
-// }
-
-// class MainApp extends StatelessWidget {
-//   MainApp({super.key});
-
-//   int contador = 0;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     /** 
-//      * Contexto: La pantalla actual
-//     */
-//     return MaterialApp( // Widget principal que contiene a todos los widgets
-//       title: "Primera App",
-//       home: Scaffold(
-//         backgroundColor: Colors.white,
-//         body: Center(
-//           child: Text('Contador de clics $contador', style: TextStyle(color: Colors.blueAccent),),
-//         ),
-//         floatingActionButton: FloatingActionButton(
-//           child: const Icon(
-//             Icons.mouse, 
-//             color: Color.fromARGB(255, 100, 100, 100),),
-//             onPressed: (){
-//               contador++;
-//             }),
-//       ),
-//     );
-//   }
-// }

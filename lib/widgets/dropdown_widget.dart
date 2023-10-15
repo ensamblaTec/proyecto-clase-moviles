@@ -1,35 +1,36 @@
 import 'package:flutter/material.dart';
 
-class DownListGender extends StatefulWidget {
-  String? controller = "Completado";
-  DownListGender({super.key, this.controller});
+class DropDownWidget extends StatefulWidget {
+  String? controller = '';
+  DropDownWidget({super.key, this.controller});
 
   @override
-  State<DownListGender> createState() => _DownListGenderState();
+  State<DropDownWidget> createState() => _DropDownWidgetState();
 }
 
-class _DownListGenderState extends State<DownListGender> {
+class _DropDownWidgetState extends State<DropDownWidget> {
 
     List<String> dropDownValues = ['Pendiente', 'Completado', 'En proceso'];
-  String dropdownValue = 'Pendiente';
+  String dropDownValue = '';
 
   @override
   Widget build(BuildContext context) {
+    dropDownValue = widget.controller!;
     return Container(
       padding: const EdgeInsets.all(8),
       child: DropdownButtonFormField<String>(
-        value: dropdownValue,
+        value: dropDownValue,
         dropdownColor: Colors.black87,
-        icon: const Icon(Icons.expand_more),
+        icon: const Icon(Icons.info),
         decoration: InputDecoration(
           prefixIcon: Container(
                   margin: const EdgeInsets.only(left: 14, right: 14),
                   child: const Icon(
-                    Icons.man,
+                    Icons.info,
                   ),
                 ),
-                hintText: "Genero",
-                labelText: "Genero"
+                hintText: "Status",
+                labelText: "Status"
         ),
         items: dropDownValues.map<DropdownMenuItem<String>>((String value){
           return DropdownMenuItem<String>(
@@ -38,7 +39,7 @@ class _DownListGenderState extends State<DownListGender> {
           );
         }).toList(),
          onChanged: (String? newValue){
-          dropdownValue=newValue!;
+          dropDownValue=newValue!;
           widget.controller= newValue;
          },
         ),

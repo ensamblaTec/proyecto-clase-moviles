@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/agendadb.dart';
 import 'package:pmsn20232/models/task_model.dart';
 import 'package:pmsn20232/services/tasks_provider.dart';
+import 'package:pmsn20232/widgets/dropdown_widget.dart';
 import 'package:provider/provider.dart';
 
 class AddTask extends StatefulWidget {
@@ -15,8 +16,7 @@ class _AddTaskState extends State<AddTask> {
   TaskModel? args;
   TextEditingController txtConName = TextEditingController();
   TextEditingController txtConDsc = TextEditingController();
-  String? dropDownValue;
-
+  DropDownWidget? dropDownWidget;
 
   AgendaDB? agendaDB;
   @override
@@ -40,16 +40,16 @@ class _AddTaskState extends State<AddTask> {
 
     switch (stt) {
       case 'E':
-        dropDownValue = 'En proceso';
+        dropDownWidget = DropDownWidget(controller: "En proceso",);
         break;
       case 'C':
-        dropDownValue = 'Completado';
+        dropDownWidget = DropDownWidget(controller: "Completado",);
         break;
       case 'P':
-        dropDownValue = 'Pendiente';
+        dropDownWidget = DropDownWidget(controller: 'Pendiente',);
         break;
       default:
-        dropDownValue = 'Pendiente';
+        dropDownWidget = DropDownWidget(controller: 'Pendiente',);
     }
   }
 
@@ -59,6 +59,8 @@ class _AddTaskState extends State<AddTask> {
     var data = ModalRoute.of(context)?.settings.arguments;
     if (data != null) {
       verifyIsEditting(data);
+    } else {
+      dropDownWidget = DropDownWidget(controller: 'Pendiente',);
     }
 
     final txtNameTask = TextFormField(
@@ -77,27 +79,13 @@ class _AddTaskState extends State<AddTask> {
       height: 10,
     );
 
-    final DropdownButton ddBStatus = DropdownButton(
-        value: dropDownValue,
-        items: dropDownValues
-            .map((status) =>
-                DropdownMenuItem(value: status, child: Text(status)))
-            .toList(),
-        onChanged: (value) {
-          dropDownValue = value!;
-          if(args != null) {
-            args!.sttTask = value!;
-          }
-          setState(() {});
-        });
-
     final ElevatedButton btnGuardar = ElevatedButton(
         onPressed: () {
           args == null
               ? agendaDB!.INSERT('tblTareas', {
                   'nameTask': txtConName.text,
                   'dscTask': txtConDsc.text,
-                  'sttTask': dropDownValue!.substring(0, 1),
+                  'sttTask': dropDownWidget!.controller!.substring(0, 1),
                 }).then((value) {
                   var snackBar = SnackBar(
                     content: Text(value > 0
@@ -114,7 +102,7 @@ class _AddTaskState extends State<AddTask> {
                   'idTask': args!.idTask,
                   'nameTask': txtConName.text,
                   'dscTask': txtConDsc.text,
-                  'sttTask': dropDownValue!.substring(0, 1),
+                  'sttTask': dropDownWidget!.controller!.substring(0, 1),
                 }).then((value) {
                   var snackBar = SnackBar(
                     content: Text(value > 0
@@ -143,7 +131,7 @@ class _AddTaskState extends State<AddTask> {
             space,
             txtDscTask,
             space,
-            ddBStatus,
+            dropDownWidget!,
             space,
             btnGuardar,
           ],

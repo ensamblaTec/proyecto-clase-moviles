@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/agendadb.dart';
 import 'package:pmsn20232/models/task_model.dart';
-import 'package:pmsn20232/screens/add_task.dart';
+import 'package:pmsn20232/services/tasks_provider.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class CardTaskWidget extends StatelessWidget {
@@ -11,6 +12,7 @@ class CardTaskWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final taskProvider = Provider.of<TaskProvider>(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(10),
@@ -21,6 +23,7 @@ class CardTaskWidget extends StatelessWidget {
             children: [
               Text(taskModel.nameTask!),
               Text(taskModel.dscTask!),
+              Text(taskModel.sttTask!.substring(0, 1)),
             ],
           ),
           const Expanded(
@@ -29,8 +32,8 @@ class CardTaskWidget extends StatelessWidget {
           Column(
             children: [
               IconButton(onPressed: () {
-                Navigator.pushNamed(context, '/add', arguments: {'taskModel': taskModel});
-              }, icon: const Icon(Icons.update)), 
+                Navigator.pushNamed(context, '/add', arguments: taskModel);
+              }, icon: const Icon(Icons.edit)), 
               IconButton(
                   onPressed: () {
                     showDialog(
@@ -53,6 +56,9 @@ class CardTaskWidget extends StatelessWidget {
                                 onPressed: () => agendaDB
                                         .DELETE("tblTareas", taskModel.idTask!)
                                         .then((value) {
+                                      final updateTask = Provider.of<TaskProvider>(context, listen: false);
+                                      updateTask.isUpdated = true;
+                                      taskProvider.isUpdated = true;
                                       Navigator.pop(context);
                                     })),
                           ],

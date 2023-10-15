@@ -7,6 +7,6 @@ Widget itemMovieWidget(PopularModel movie, context) {
       placeholder: AssetImage('assets/loading.gif'),
       image: NetworkImage(''),
     ),
-    onTap: () => Navigator.pushNamed(context, '/detail', arguments: ),
+    onTap: () => Navigator.pushNamed(context, '/detail', arguments: movie),
   );
 }

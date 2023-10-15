@@ -10,5 +10,6 @@ class TaskProvider with ChangeNotifier {
   set isUpdated(bool value) {
     _isUpdated = value;
     notifyListeners();
+    // _isUpdated = false;
   }
 }

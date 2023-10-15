@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: ElevatedButton(
                             onPressed: () {
                               if ((emailController.text ==
-                                      "admin@example.com") &&
+                                      "admin") &&
                                   (passwordController.text == "1234")) {
                                 Navigator.pushNamed(context, '/dash');
                               }

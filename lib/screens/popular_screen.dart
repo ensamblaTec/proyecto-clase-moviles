@@ -37,7 +37,7 @@ class _PopularScreenState extends State<PopularScreen> {
           );
           }
           if(snapshot.hasError) {
-            return Container(child: AssetImage('assets/loading.gif'),);
+            return const Center(child: Text("Algo salió mal"),);
           } else {
             return const Center(child: CircularProgressIndicator(),);
           }

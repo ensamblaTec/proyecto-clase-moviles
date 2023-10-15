@@ -13,7 +13,6 @@ class TaskScreen extends StatefulWidget {
 }
 
 class _TaskScreenState extends State<TaskScreen> {
-
   AgendaDB? agendaDB;
 
   @override
@@ -25,50 +24,52 @@ class _TaskScreenState extends State<TaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Task Manager'),
-        actions: [
-          IconButton(
-            onPressed: (){
-              Navigator.pushNamed(context, '/add').then((value) => {
-                setState(() {})
-              });
-            }, 
-            icon: const Icon(Icons.task)
-          )
-        ],
-      ),
-      body: ChangeNotifierProvider(
-        create: (context) => TaskProvider(),
-        child: futureBuilder()
+        appBar: AppBar(
+          title: const Text('Task Manager'),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/add')
+                      .then((value) => {setState(() {})});
+                },
+                icon: const Icon(Icons.task))
+          ],
         ),
-    );
+        body: futureBuilder());
   }
 
   FutureBuilder<List<TaskModel>> futureBuilder() {
+    final updateTask = Provider.of<TaskProvider>(context);
     return FutureBuilder(
-          future: agendaDB!.GETALLTASK(),
-          builder: (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot){
-            if( snapshot.hasData ){
-              return ListView.builder(
-                itemCount: snapshot.data!.length ,//snapshot.data!.length,
-                itemBuilder: (BuildContext context, int index){
-                  return CardTaskWidget(
-                    agendaDB!,
-                    taskModel: snapshot.data![index],
-                  );
-                }
-              );
-            }else{
-              if( snapshot.hasError ){
-                return const Center(
-                  child: Text('Error!'),
-                );
-              }else{
-                return const CircularProgressIndicator();
-              }
-            }
+        future: agendaDB!.GETALLTASK(),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
+          if (updateTask.isUpdated) {
+            return getList(snapshot);
+          } else {
+            return getList(snapshot);
           }
+        });
+  }
+
+  Widget getList(snapshot) {
+    if (snapshot.hasData) {
+      return ListView.builder(
+          itemCount: snapshot.data!.length, //snapshot.data!.length,
+          itemBuilder: (BuildContext context, int index) {
+            return CardTaskWidget(
+              agendaDB!,
+              taskModel: snapshot.data![index],
+            );
+          });
+    } else {
+      if (snapshot.hasError) {
+        return const Center(
+          child: Text('Error!'),
         );
+      } else {
+        return const CircularProgressIndicator();
+      }
+    }
   }
 }

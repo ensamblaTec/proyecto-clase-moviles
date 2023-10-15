@@ -9,7 +9,6 @@ class CardTaskWidget extends StatelessWidget {
   TaskModel taskModel;
   CardTaskWidget(this.agendaDB, {super.key, required this.taskModel});
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,47 +28,39 @@ class CardTaskWidget extends StatelessWidget {
           ),
           Column(
             children: [
-              GestureDetector(
-                child: const Icon(Icons.abc),
-                onTap: () {
-                  AddTask(taskModel: taskModel);
-                },
-              ),
-              GestureDetector(
-                child: Image.asset(
-                  "assets/rocket.png",
-                  height: 50,
-                ),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text("Confirm to delete"),
-                        icon: const Icon(Icons.dangerous),
-                        content: const Text('Do you want delete task?'),
-                        alignment: Alignment.center,
-                        actions: [
-                          ElevatedButton(
-                            child: const Text('Cancel'),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          ElevatedButton(
-                            child: const Text('Confirm'),
-                            onPressed: () =>
-                              agendaDB.DELETE("tblTareas", taskModel.idTask!).then((value) {
+              IconButton(onPressed: () {
+                Navigator.pushNamed(context, '/add', arguments: {'taskModel': taskModel});
+              }, icon: const Icon(Icons.update)), 
+              IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Confirm to delete"),
+                          icon: const Icon(Icons.dangerous),
+                          content: const Text('Do you want delete task?'),
+                          alignment: Alignment.center,
+                          actions: [
+                            ElevatedButton(
+                              child: const Text('Cancel'),
+                              onPressed: () {
                                 Navigator.pop(context);
-                              })
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.delete))
+                              },
+                            ),
+                            ElevatedButton(
+                                child: const Text('Confirm'),
+                                onPressed: () => agendaDB
+                                        .DELETE("tblTareas", taskModel.idTask!)
+                                        .then((value) {
+                                      Navigator.pop(context);
+                                    })),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(Icons.delete))
             ],
           )
         ],

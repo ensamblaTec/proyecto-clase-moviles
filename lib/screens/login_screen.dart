@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pmsn20232/services/local_storage.dart';
 import 'package:pmsn20232/widgets/checkbox_widget.dart';
 
 class LoginScreen extends StatefulWidget {

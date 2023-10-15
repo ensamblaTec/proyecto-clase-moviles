@@ -47,6 +47,14 @@ class DashboardScreen extends StatelessWidget {
               Navigator.pushNamed(context, '/task');
             },
           ),
+          ListTile(
+            leading:  const Icon(Icons.task_alt_outlined),
+            trailing: const Icon(Icons.chevron_right),
+            title: const Text('Test Provider'),
+            onTap: () {
+              Navigator.pushNamed(context, '/prov');
+            },
+          ),
           DayNightSwitcher(
             isDarkModeEnabled: changeTheme.isLightTheme,
             onStateChanged: (isDarkModeEnabled) {

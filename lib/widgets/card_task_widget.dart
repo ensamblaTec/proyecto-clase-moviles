@@ -39,12 +39,16 @@ class CardTaskWidget extends StatelessWidget {
             children: [
               IconButton(
                   onPressed: () {
-                    taskModel.sttTask = taskModel == "C" ? "C" : "P";
+                    if(taskModel.sttTask == 'C') {
+                      taskModel.sttTask = 'P';
+                    } else {
+                      taskModel.sttTask = 'C';
+                    }
                     agendaDB.updateStatusCompleted('tblTareas', {
                       'idTask': taskModel.idTask,
                       'nameTask': taskModel.nameTask,
                       'dscTask': taskModel.dscTask,
-                      'sttTask': 'C',
+                      'sttTask': taskModel.sttTask,
                     }).then((value) {
                       final updateTask =
                           Provider.of<TaskProvider>(context, listen: false);
@@ -52,9 +56,10 @@ class CardTaskWidget extends StatelessWidget {
                       taskProvider.isUpdated = true;
                     });
                   },
-                  icon: Icon(taskModel.sttTask == "C"
+                  icon: Icon(taskModel.sttTask == 'C'
                       ? Icons.star
-                      : Icons.star_border)),
+                      : Icons.star_border)
+                  ),
               IconButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/add', arguments: taskModel);

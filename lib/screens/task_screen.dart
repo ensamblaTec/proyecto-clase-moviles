@@ -68,7 +68,6 @@ class _TaskScreenState extends State<TaskScreen> {
         actions: [
           dropDownFilter!,
           ElevatedButton(onPressed: () => setState(() {
-            
           }), child: const Text("OK"))
           
         ],

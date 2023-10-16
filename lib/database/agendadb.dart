@@ -76,4 +76,10 @@ class AgendaDB {
     return result.map((task)=>TaskModel.fromMap(task)).toList();
   }
 
+  // Future<List<TaskModel>> getTaskByStatus(String status) async{
+  //   var conexion = await database;
+  //   var result = await conexion!.query('tblTareas', where: 'sttTask = LIKE %s', whereArgs: [status]);
+  //   return result.map((task)=>TaskModel.fromMap(task)).toList();
+  // }
+
 }

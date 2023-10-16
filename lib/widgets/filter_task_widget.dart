@@ -19,9 +19,10 @@ class _FilterTaskWidgetState extends State<FilterTaskWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print("hey");
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: openFilterDialog,
+        onPressed: () => print("hola"),
         child: const Icon(Icons.add),
       ),
       body: selectedUserList == null || selectedUserList!.isEmpty
@@ -37,7 +38,8 @@ class _FilterTaskWidgetState extends State<FilterTaskWidget> {
     );
   }
 
-    void openFilterDialog() async {
+    void OpenFilterDialog(context) async {
+      print("entro");
     await FilterListDialog.display<TaskModel>(
       context,
       listData: taskList,
@@ -64,7 +66,7 @@ class _FilterTaskWidgetState extends State<FilterTaskWidget> {
         return task.nameTask!.toLowerCase().contains(query.toLowerCase());
       },
       tileLabel: (task) => task!.nameTask,
-      emptySearchChild: Center(child: Text('No task found')),
+      emptySearchChild: const Center(child: Text('No task found')),
       searchFieldHint: 'Search Here..',
       onApplyButtonClick: (list) {
         // Do something with selected list

@@ -20,9 +20,15 @@ class CardTaskWidget extends StatelessWidget {
       child: Row(
         children: [
           Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            textDirection: TextDirection.ltr,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(taskModel.nameTask!),
-              Text(taskModel.dscTask!),
+              Text('Title: ${taskModel.nameTask!}'),
+              const Padding(padding: EdgeInsets.all(2)),
+              Text(
+                  'Description: ${taskModel.dscTask!.length > 20 ? '${taskModel.dscTask!.substring(0, 20)}...' : taskModel.dscTask!.substring(0, taskModel.dscTask!.length)}'),
+              const Padding(padding: EdgeInsets.all(2)),
               Text(taskModel.sttTask!.substring(0, 1)),
             ],
           ),
@@ -31,9 +37,29 @@ class CardTaskWidget extends StatelessWidget {
           ),
           Column(
             children: [
-              IconButton(onPressed: () {
-                Navigator.pushNamed(context, '/add', arguments: taskModel);
-              }, icon: const Icon(Icons.edit)), 
+              IconButton(
+                  onPressed: () {
+                    taskModel.sttTask = taskModel == "C" ? "C" : "P";
+                    agendaDB.updateStatusCompleted('tblTareas', {
+                      'idTask': taskModel.idTask,
+                      'nameTask': taskModel.nameTask,
+                      'dscTask': taskModel.dscTask,
+                      'sttTask': 'C',
+                    }).then((value) {
+                      final updateTask =
+                          Provider.of<TaskProvider>(context, listen: false);
+                      updateTask.isUpdated = true;
+                      taskProvider.isUpdated = true;
+                    });
+                  },
+                  icon: Icon(taskModel.sttTask == "C"
+                      ? Icons.star
+                      : Icons.star_border)),
+              IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/add', arguments: taskModel);
+                  },
+                  icon: const Icon(Icons.edit)),
               IconButton(
                   onPressed: () {
                     showDialog(
@@ -56,7 +82,9 @@ class CardTaskWidget extends StatelessWidget {
                                 onPressed: () => agendaDB
                                         .DELETE("tblTareas", taskModel.idTask!)
                                         .then((value) {
-                                      final updateTask = Provider.of<TaskProvider>(context, listen: false);
+                                      final updateTask =
+                                          Provider.of<TaskProvider>(context,
+                                              listen: false);
                                       updateTask.isUpdated = true;
                                       taskProvider.isUpdated = true;
                                       Navigator.pop(context);

@@ -37,20 +37,21 @@ class _AddTaskState extends State<AddTask> {
     txtConDsc.text =
         !txtConDsc.text.isNotEmpty ? args!.dscTask! : txtConDsc.text;
     stt = args!.sttTask!.substring(0, 1);
-
+    var value = '';
     switch (stt) {
       case 'E':
-        dropDownWidget = DropDownWidget(controller: "En proceso",);
+        value = 'En proceso';
         break;
       case 'C':
-        dropDownWidget = DropDownWidget(controller: "Completado",);
+        value = 'Completado';
         break;
       case 'P':
-        dropDownWidget = DropDownWidget(controller: 'Pendiente',);
+        value = 'Pendiente';
         break;
       default:
-        dropDownWidget = DropDownWidget(controller: 'Pendiente',);
+        value = 'Pendiente';
     }
+    dropDownWidget = DropDownWidget(controller: value, values: const <String>['Pendiente', 'En proceso', 'Completado'],);
   }
 
   @override
@@ -60,7 +61,7 @@ class _AddTaskState extends State<AddTask> {
     if (data != null) {
       verifyIsEditting(data);
     } else {
-      dropDownWidget = DropDownWidget(controller: 'Pendiente',);
+      dropDownWidget = DropDownWidget(controller: 'Pendiente', values: const <String>['Pendiente', 'En proceso', 'Completado'],);
     }
 
     final txtNameTask = TextFormField(

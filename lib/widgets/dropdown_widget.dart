@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class DropDownWidget extends StatefulWidget {
   String? controller = '';
-  DropDownWidget({super.key, this.controller});
+  List<String> values = [];
+  DropDownWidget({super.key, this.controller, required this.values});
 
   @override
   State<DropDownWidget> createState() => _DropDownWidgetState();
@@ -10,11 +11,12 @@ class DropDownWidget extends StatefulWidget {
 
 class _DropDownWidgetState extends State<DropDownWidget> {
 
-    List<String> dropDownValues = ['Pendiente', 'Completado', 'En proceso'];
+  List<String> dropDownValues = [];
   String dropDownValue = '';
 
   @override
   Widget build(BuildContext context) {
+    dropDownValues = widget.values;
     dropDownValue = widget.controller!;
     return Container(
       padding: const EdgeInsets.all(8),

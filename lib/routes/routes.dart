@@ -10,8 +10,11 @@ import 'package:pmsn20232/screens/task_screen.dart';
 
 Map<String, WidgetBuilder> getRoutes() {
   return {
-    '/dash': (BuildContext context) => DashboardScreen(),
-    '/task': (BuildContext context) => const TaskScreen(),
+    '/dash': (BuildContext context) => const DashboardScreen(),
+    '/task': (BuildContext context) => TaskScreen(
+          title: "Task Manager",
+          dropDownValues: const ['Pendiente', 'Completado', 'En proceso', 'Todo'],
+        ),
     '/add': (BuildContext context) => const AddTask(),
     '/login': (BuildContext context) => const LoginScreen(),
     '/popular': (BuildContext context) => const PopularScreen(),

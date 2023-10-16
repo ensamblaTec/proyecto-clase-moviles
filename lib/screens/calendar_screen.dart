@@ -61,7 +61,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   List<TaskModel> _getTareasForDay(DateTime day, List<TaskModel> tareas) {
     // Filtramos las tareas basadas en la fecha
-    return tareas.where((tarea) => isSameDay(tarea.getDateFrom(tarea.endDate), day)).toList();
+    return tareas.where((tarea) => isSameDay(tarea.getDateFrom(tarea.initDate), day)).toList();
   }
 
   void _showTareaDetails(DateTime day, List<TaskModel> tareas) {

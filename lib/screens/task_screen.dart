@@ -8,7 +8,9 @@ import 'package:pmsn20232/widgets/filter_text_widget.dart';
 import 'package:provider/provider.dart';
 
 class TaskScreen extends StatefulWidget {
-  const TaskScreen({super.key});
+  final String title;
+  List<String> dropDownValues;
+  TaskScreen({super.key, required this.title, required this.dropDownValues});
 
   @override
   State<TaskScreen> createState() => _TaskScreenState();
@@ -16,13 +18,6 @@ class TaskScreen extends StatefulWidget {
 
 class _TaskScreenState extends State<TaskScreen> {
   AgendaDB? agendaDB;
-  List<TaskModel> taskList = [
-      TaskModel(idTask: 1, nameTask: 'T1', dscTask: '', sttTask: 'E'),
-      TaskModel(idTask: 1, nameTask: 'T5', dscTask: '', sttTask: 'E'),
-      TaskModel(idTask: 1, nameTask: 'T9', dscTask: '', sttTask: 'E'),
-      TaskModel(idTask: 2, nameTask: 'T2', dscTask: '', sttTask: 'P'),
-      TaskModel(idTask: 3, nameTask: 'T3', dscTask: '', sttTask: 'C'),
-    ]; 
     List<TaskModel>? selectedUserList = [];
     List<String>? selectedTaskList = [];
     List<String> dropDownValues = [];
@@ -33,7 +28,7 @@ class _TaskScreenState extends State<TaskScreen> {
   void initState() {
     super.initState();
     agendaDB = AgendaDB();
-    dropDownValues = ['Pendiente', 'Completado', 'En proceso', 'Todo'];
+    dropDownValues = widget.dropDownValues;
     dropDownFilter = DropDownWidget(controller: 'Todo', values: dropDownValues);
     filterText = FilterTextWidget();
   }
@@ -42,7 +37,7 @@ class _TaskScreenState extends State<TaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Task Manager'),
+          title: Text(widget.title),
           actions: [
             IconButton(
                 onPressed: () {

@@ -1,11 +1,14 @@
+import 'package:intl/intl.dart';
+
 class TaskModel {
   int? idTask;
   String? nameTask;
   String? dscTask;
   String? sttTask;
-  DateTime? dateTask;
+  String? initDate;
+  String? endDate;
 
-  TaskModel({this.sttTask, this.idTask, this.nameTask, this.dscTask, this.dateTask});
+  TaskModel({this.sttTask, this.idTask, this.nameTask, this.dscTask, this.initDate, this.endDate});
   
   factory TaskModel.fromMap(Map<String, dynamic> map) {
     return TaskModel(
@@ -13,7 +16,8 @@ class TaskModel {
         dscTask: map['dscTask'],
         nameTask: map['nameTask'],
         sttTask: map['sttTask'],
-        dateTask: map['dateTask'],
+        initDate: map['initDate'],
+        endDate: map['endDate'],
         );
   }
 
@@ -23,7 +27,13 @@ class TaskModel {
       'nameTask': nameTask,
       'dscTask': dscTask,
       'sttTask': sttTask,
-      'dateTask': dateTask,
+      'initTask': initDate,
+      'endTask': endDate,
     };
+  }
+
+  DateTime getDateFrom(date) {
+    DateTime dt = DateTime.parse(date);
+    return dt;
   }
 }

@@ -9,7 +9,6 @@ class CardTaskWidget extends StatelessWidget {
   AgendaDB agendaDB;
   TaskModel taskModel;
   CardTaskWidget(this.agendaDB, {super.key, required this.taskModel});
-
   @override
   Widget build(BuildContext context) {
     final taskProvider = Provider.of<TaskProvider>(context);
@@ -30,6 +29,8 @@ class CardTaskWidget extends StatelessWidget {
                   'Description: ${taskModel.dscTask!.length > 20 ? '${taskModel.dscTask!.substring(0, 20)}...' : taskModel.dscTask!.substring(0, taskModel.dscTask!.length)}'),
               const Padding(padding: EdgeInsets.all(2)),
               Text(taskModel.sttTask!.substring(0, 1)),
+              Text(taskModel.endDate.toString()),
+              Text(taskModel.initDate.toString()),
             ],
           ),
           const Expanded(
@@ -49,6 +50,8 @@ class CardTaskWidget extends StatelessWidget {
                       'nameTask': taskModel.nameTask,
                       'dscTask': taskModel.dscTask,
                       'sttTask': taskModel.sttTask,
+                      'endDate': taskModel.endDate,
+                      'initDate': taskModel.initDate,
                     }).then((value) {
                       final updateTask =
                           Provider.of<TaskProvider>(context, listen: false);
@@ -106,4 +109,6 @@ class CardTaskWidget extends StatelessWidget {
       ),
     );
   }
+
+  
 }

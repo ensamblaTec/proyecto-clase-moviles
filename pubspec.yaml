@@ -14,8 +14,10 @@ dependencies:
   day_night_switcher: ^0.2.0+1
   sqflite: ^2.3.0
   http: ^0.13.5
+  syncfusion_flutter_calendar: ^23.1.36
   flutter:
     sdk: flutter
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:

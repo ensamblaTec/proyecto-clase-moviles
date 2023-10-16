@@ -33,7 +33,8 @@ class AgendaDB {
       nameTask VARCHAR(50),
       dscTask VARCHAR(50),
       sttTask VARCHAR(1),
-      
+      initDate DATETIME,
+      endDate DATETIME
     );''';
     db.execute(query);
   }
@@ -76,10 +77,10 @@ class AgendaDB {
     return result.map((task)=>TaskModel.fromMap(task)).toList();
   }
 
-  // Future<List<TaskModel>> getTaskByStatus(String status) async{
-  //   var conexion = await database;
-  //   var result = await conexion!.query('tblTareas', where: 'sttTask = LIKE %s', whereArgs: [status]);
-  //   return result.map((task)=>TaskModel.fromMap(task)).toList();
-  // }
+  Future<List<TaskModel>> getTaskByText(String nameTask) async{
+    var conexion = await database;
+    var result = await conexion!.query('tblTareas', where: 'nameTask LIKE ?', whereArgs: [nameTask]);
+    return result.map((task)=>TaskModel.fromMap(task)).toList();
+  }
 
 }

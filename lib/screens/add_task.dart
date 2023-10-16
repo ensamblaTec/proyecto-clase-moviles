@@ -4,6 +4,7 @@ import 'package:pmsn20232/models/task_model.dart';
 import 'package:pmsn20232/services/tasks_provider.dart';
 import 'package:pmsn20232/widgets/dropdown_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class AddTask extends StatefulWidget {
   const AddTask({super.key});
@@ -13,6 +14,39 @@ class AddTask extends StatefulWidget {
 }
 
 class _AddTaskState extends State<AddTask> {
+  DateTime initSelectedDate = DateTime.now();
+  DateTime endSelectedDate = DateTime.now();
+final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+
+  Future<void> _selectDateEnd(BuildContext context) async {
+    final DateTime? picked = (await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(DateTime.now().year - 100),
+        lastDate: DateTime(DateTime.now().year + 1)));
+
+    if (picked != null && picked != endSelectedDate) {
+      setState(() {
+        print(endSelectedDate.toString().substring(0,19));
+        endSelectedDate = picked;
+      });
+    }
+  }
+
+  Future<void> _selectDateInit(BuildContext context) async {
+    final DateTime? picked = (await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(DateTime.now().year - 100),
+        lastDate: DateTime(DateTime.now().year + 1)));
+
+    if (picked != null && picked != initSelectedDate) {
+      setState(() {
+        initSelectedDate = picked;
+      });
+    }
+  }
+
   TaskModel? args;
   TextEditingController txtConName = TextEditingController();
   TextEditingController txtConDsc = TextEditingController();
@@ -56,6 +90,7 @@ class _AddTaskState extends State<AddTask> {
 
   @override
   Widget build(BuildContext context) {
+
     final taskProvider = Provider.of<TaskProvider>(context);
     var data = ModalRoute.of(context)?.settings.arguments;
     if (data != null) {
@@ -87,6 +122,8 @@ class _AddTaskState extends State<AddTask> {
                   'nameTask': txtConName.text,
                   'dscTask': txtConDsc.text,
                   'sttTask': dropDownWidget!.controller!.substring(0, 1),
+                  'initDate': initSelectedDate.toString().substring(0,19),
+                  'endDate': endSelectedDate.toString().substring(0,19),
                 }).then((value) {
                   var snackBar = SnackBar(
                     content: Text(value > 0
@@ -104,6 +141,8 @@ class _AddTaskState extends State<AddTask> {
                   'nameTask': txtConName.text,
                   'dscTask': txtConDsc.text,
                   'sttTask': dropDownWidget!.controller!.substring(0, 1),
+'initDate': initSelectedDate.toString().substring(0,19),
+                  'endDate': endSelectedDate.toString().substring(0,19),
                 }).then((value) {
                   var snackBar = SnackBar(
                     content: Text(value > 0
@@ -117,7 +156,6 @@ class _AddTaskState extends State<AddTask> {
                 });
         },
         child: const Text('Save Task'));
-
     return Scaffold(
       appBar: AppBar(
         title:
@@ -134,9 +172,59 @@ class _AddTaskState extends State<AddTask> {
             space,
             dropDownWidget!,
             space,
+            buildDateInitSelector(context, "Fecha Inicial"),
+            buildDateEndSelector(context, "Fecha Final"),
             btnGuardar,
           ],
         ),
+      ),
+    );
+  }
+  
+  Widget buildDateEndSelector(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        readOnly:
+            true, // Evita que se pueda editar el campo de texto directamente
+        controller: TextEditingController(
+          text:
+              dateFormat.format(endSelectedDate), // Muestra la fecha seleccionada
+        ),
+
+        decoration: InputDecoration(
+          labelText: title,
+          suffixIcon: const Icon(Icons.calendar_today),
+        ),
+        onTap: () {
+          _selectDateEnd(
+              context); // Abre el selector de fecha al tocar en cualquier parte del campo
+        },
+        // Añade el sufijo del ícono para indicar que es un campo de fecha
+      ),
+    );
+  }
+  
+  Widget buildDateInitSelector(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        readOnly:
+            true, // Evita que se pueda editar el campo de texto directamente
+        controller: TextEditingController(
+          text:
+              dateFormat.format(initSelectedDate), // Muestra la fecha seleccionada
+        ),
+
+        decoration: InputDecoration(
+          labelText: title,
+          suffixIcon: const Icon(Icons.calendar_today),
+        ),
+        onTap: () {
+          _selectDateInit(
+              context); // Abre el selector de fecha al tocar en cualquier parte del campo
+        },
+        // Añade el sufijo del ícono para indicar que es un campo de fecha
       ),
     );
   }

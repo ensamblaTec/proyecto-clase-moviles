@@ -1,10 +1,10 @@
-import 'package:filter_list/filter_list.dart';
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/agendadb.dart';
 import 'package:pmsn20232/models/task_model.dart';
 import 'package:pmsn20232/services/tasks_provider.dart';
 import 'package:pmsn20232/widgets/card_task_widget.dart';
 import 'package:pmsn20232/widgets/dropdown_widget.dart';
+import 'package:pmsn20232/widgets/filter_text_widget.dart';
 import 'package:provider/provider.dart';
 
 class TaskScreen extends StatefulWidget {
@@ -27,12 +27,15 @@ class _TaskScreenState extends State<TaskScreen> {
     List<String>? selectedTaskList = [];
     List<String> dropDownValues = [];
     DropDownWidget? dropDownFilter;
+    FilterTextWidget? filterText;
+
   @override
   void initState() {
     super.initState();
     agendaDB = AgendaDB();
     dropDownValues = ['Pendiente', 'Completado', 'En proceso', 'Todo'];
     dropDownFilter = DropDownWidget(controller: 'Todo', values: dropDownValues);
+    filterText = FilterTextWidget();
   }
 
   @override
@@ -50,9 +53,11 @@ class _TaskScreenState extends State<TaskScreen> {
           ],
         ),
         body: Stack(
-          children: [futureBuilder()],
-          // children: [filtered(context)],
-        ),
+          children: [
+              filterText!,
+              futureBuilder()
+          ],
+        ),         // children: [filtered(context)],
         floatingActionButton: FloatingActionButton(
         onPressed: () => openFilterDialog(context),
         child: const Icon(Icons.add),
@@ -68,10 +73,9 @@ class _TaskScreenState extends State<TaskScreen> {
         actions: [
           dropDownFilter!,
           ElevatedButton(onPressed: () => setState(() {
-          }), child: const Text("OK"))
-          
+            Navigator.pop(context);
+          }), child: const Text("OK"),)
         ],
-
       )
     );
   }
@@ -85,7 +89,7 @@ class _TaskScreenState extends State<TaskScreen> {
   }
 
   FutureBuilder<List<TaskModel>> filterDataGetting(TaskProvider updateTask) {
-    print("Hola ${dropDownFilter!.controller}");
+
     switch(dropDownFilter!.controller) {
       case 'En proceso':
         return gettingByStatus(updateTask, 'E');
@@ -120,16 +124,32 @@ class _TaskScreenState extends State<TaskScreen> {
     });
   }
 
+  FutureBuilder<List<TaskModel>> gettingByText(TaskProvider updateTask, String nameTask) {
+    return FutureBuilder(
+    future: agendaDB!.getTaskByText(nameTask),
+    builder:
+        (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
+      if (updateTask.isUpdated) {
+        return getList(snapshot);
+      } else {
+        return getList(snapshot);
+      }
+    });
+  }
+
   Widget getList(snapshot) {
     if (snapshot.hasData) {
-      return ListView.builder(
-          itemCount: snapshot.data!.length, //snapshot.data!.length,
-          itemBuilder: (BuildContext context, int index) {
-            return CardTaskWidget(
-              agendaDB!,
-              taskModel: snapshot.data![index],
-            );
-          });
+      return Container(
+        margin: const EdgeInsets.fromLTRB(0, 120, 0, 0),
+        child: ListView.builder(
+            itemCount: snapshot.data!.length, //snapshot.data!.length,
+            itemBuilder: (BuildContext context, int index) {
+              return CardTaskWidget(
+                agendaDB!,
+                taskModel: snapshot.data![index],
+              );
+            }),
+      );
     } else {
       if (snapshot.hasError) {
         return const Center(

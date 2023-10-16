@@ -63,6 +63,13 @@ class DashboardScreen extends StatelessWidget {
             },
           ),
           ListTile(
+                title: const Text("Calendar"),
+                trailing: const Icon(Icons.calendar_today),
+                onTap: () {
+                  Navigator.pushNamed(context, '/calendar');
+                },
+              ),
+          ListTile(
                 title: const Text("Sign Out"),
                 trailing: const Icon(Icons.exit_to_app),
                 onTap: () {

@@ -79,8 +79,7 @@ class AgendaDB {
 
   Future<List<TaskModel>> getTaskByText(String nameTask) async{
     var conexion = await database;
-    var result = await conexion!.query('tblTareas', where: 'nameTask LIKE ?', whereArgs: [nameTask]);
+    var result = await conexion!.query('tblTareas', where: "nameTask LIKE ?", whereArgs: [nameTask]);
     return result.map((task)=>TaskModel.fromMap(task)).toList();
   }
-
 }

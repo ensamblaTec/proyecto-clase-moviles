@@ -5,6 +5,7 @@ import 'package:pmsn20232/routes/routes.dart';
 import 'package:pmsn20232/screens/dashboard_screen.dart';
 import 'package:pmsn20232/screens/login_screen.dart';
 import 'package:pmsn20232/services/local_storage.dart';
+import 'package:pmsn20232/services/notification_services.dart';
 import 'package:pmsn20232/services/tasks_provider.dart';
 import 'package:pmsn20232/services/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocalStorage.configurePrefs();
+  NotificationService().initNotification();
 
   runApp(const MainApp());
 }

@@ -27,7 +27,7 @@ final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
     if (picked != null && picked != endSelectedDate) {
       setState(() {
-        print(endSelectedDate.toString().substring(0,19));
+        // print(endSelectedDate.toString().substring(0,19));
         endSelectedDate = picked;
       });
     }
@@ -51,8 +51,8 @@ final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
   TextEditingController txtConName = TextEditingController();
   TextEditingController txtConDsc = TextEditingController();
   DropDownWidget? dropDownWidget;
-
   AgendaDB? agendaDB;
+
   @override
   void initState() {
     super.initState();
@@ -65,6 +65,7 @@ final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
       args = null;
       return;
     }
+    
     args = data as TaskModel;
     txtConName.text =
         !txtConName.text.isNotEmpty ? args!.nameTask! : txtConName.text;

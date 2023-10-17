@@ -98,9 +98,17 @@ class _TaskScreenState extends State<TaskScreen> {
       builder:
           (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
         if (updateTask.isUpdated) {
-          return getList(snapshot);
+          if(filterText!.filtered.isNotEmpty) {
+            return buildList(filterText!.filtered);
+          } else {
+            return getList(snapshot);
+          }
         } else {
-          return getList(snapshot);
+          if(filterText!.filtered.isNotEmpty) {
+            return buildList(filterText!.filtered);
+          } else {
+            return getList(snapshot);
+          }
         }
       });
     }
@@ -154,5 +162,19 @@ class _TaskScreenState extends State<TaskScreen> {
         return const CircularProgressIndicator();
       }
     }
+  }
+
+  Widget buildList(info) {
+      return Container(
+        margin: const EdgeInsets.fromLTRB(0, 120, 0, 0),
+        child: ListView.builder(
+            itemCount: info!.length, //snapshot.data!.length,
+            itemBuilder: (BuildContext context, int index) {
+              return CardTaskWidget(
+                agendaDB!,
+                taskModel: info![index],
+              );
+            }),
+      );
   }
 }

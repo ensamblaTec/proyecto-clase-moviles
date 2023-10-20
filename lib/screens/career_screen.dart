@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/agendadb.dart';
-import 'package:pmsn20232/models/task_model.dart';
-import 'package:pmsn20232/services/tasks_provider.dart';
-import 'package:pmsn20232/widgets/card_task_widget.dart';
 import 'package:pmsn20232/widgets/dropdown_widget.dart';
 import 'package:pmsn20232/widgets/filter_text_widget.dart';
 import 'package:provider/provider.dart';
@@ -17,10 +14,11 @@ class CareerScreen extends StatefulWidget {
 class _CareerScreenState extends State<CareerScreen> {
   AgendaDB? agendaDB;
     List<CareerModel>? selectedUserList = [];
-    List<String>? selectedTaskList = [];
+    List<String>? selectedCareerList = [];
     List<String> dropDownValues = [];
     DropDownWidget? dropDownFilter;
     FilterTextWidget? filterText;
+
   @override
   void initState() {
     super.initState();
@@ -36,10 +34,10 @@ class _CareerScreenState extends State<CareerScreen> {
           actions: [
             IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/addTeacher')
+                  Navigator.pushNamed(context, '/addCareer')
                       .then((value) => {setState(() {})});
                 },
-                icon: const Icon(Icons.task))
+                icon: const Icon(Icons.Career))
           ],
         ),
         body: Stack(
@@ -69,26 +67,26 @@ class _CareerScreenState extends State<CareerScreen> {
     );
   }
   FutureBuilder<List<CareerModel>> futureBuilder() {
-    final updateTask = Provider.of<TaskProvider>(context);
-    if (updateTask.isUpdated) {
-    return filterDataGetting(updateTask);
+    final updateCareer = Provider.of<CareerProvider>(context);
+    if (updateCareer.isUpdated) {
+    return filterDataGetting(updateCareer);
     }
-    return filterDataGetting(updateTask);
+    return filterDataGetting(updateCareer);
   }
-  FutureBuilder<List<CareerModel>> filterDataGetting(TaskProvider updateTask) {
+  FutureBuilder<List<CareerModel>> filterDataGetting(CareerProvider updateCareer) {
     switch(dropDownFilter!.controller) {
       case 'En proceso':
-        return gettingByStatus(updateTask, 'E');
+        return gettingByStatus(updateCareer, 'E');
       case 'Completado':
-        return gettingByStatus(updateTask, 'C');
+        return gettingByStatus(updateCareer, 'C');
       case 'Pendiente':
-        return gettingByStatus(updateTask, 'P');
+        return gettingByStatus(updateCareer, 'P');
       default:
         return FutureBuilder(
-      future: agendaDB!.GETALLTASK(),
+      future: agendaDB!.GETALLCareer(),
       builder:
           (BuildContext context, AsyncSnapshot<List<CareerModel>> snapshot) {
-        if (updateTask.isUpdated) {
+        if (updateCareer.isUpdated) {
           if(filterText!.filtered.isNotEmpty) {
             return buildList(filterText!.filtered);
           } else {
@@ -104,24 +102,24 @@ class _CareerScreenState extends State<CareerScreen> {
       });
     }
   }
-  FutureBuilder<List<CareerModel>> gettingByStatus(TaskProvider updateTask, String status) {
+  FutureBuilder<List<CareerModel>> gettingByStatus(CareerProvider updateCareer, String status) {
     return FutureBuilder(
-    future: agendaDB!.getTaskByStatus(status),
+    future: agendaDB!.getCareerByStatus(status),
     builder:
         (BuildContext context, AsyncSnapshot<List<CareerModel>> snapshot) {
-      if (updateTask.isUpdated) {
+      if (updateCareer.isUpdated) {
         return getList(snapshot);
       } else {
         return getList(snapshot);
       }
     });
   }
-  FutureBuilder<List<CareerModel>> gettingByText(TaskProvider updateTask, String nameTask) {
+  FutureBuilder<List<CareerModel>> gettingByText(CareerProvider updateCareer, String nameCareer) {
     return FutureBuilder(
-    future: agendaDB!.getTaskByText(nameTask),
+    future: agendaDB!.getCareerByText(nameCareer),
     builder:
         (BuildContext context, AsyncSnapshot<List<CareerModel>> snapshot) {
-      if (updateTask.isUpdated) {
+      if (updateCareer.isUpdated) {
         return getList(snapshot);
       } else {
         return getList(snapshot);
@@ -135,9 +133,9 @@ class _CareerScreenState extends State<CareerScreen> {
         child: ListView.builder(
             itemCount: snapshot.data!.length, //snapshot.data!.length,
             itemBuilder: (BuildContext context, int index) {
-              return CardTaskWidget(
+              return CardCareerWidget(
                 agendaDB!,
-                taskModel: snapshot.data![index],
+                CareerModel: snapshot.data![index],
               );
             }),
       );
@@ -157,9 +155,9 @@ class _CareerScreenState extends State<CareerScreen> {
         child: ListView.builder(
             itemCount: info!.length, //snapshot.data!.length,
             itemBuilder: (BuildContext context, int index) {
-              return CardTaskWidget(
+              return CardCareerWidget(
                 agendaDB!,
-                taskModel: info![index],
+                CareerModel: info![index],
               );
             }),
       );

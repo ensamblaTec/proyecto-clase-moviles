@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pmsn20232/assets/styles.dart';
 import 'package:pmsn20232/provider/test_provider.dart';
 import 'package:pmsn20232/routes/routes.dart';
@@ -9,12 +10,27 @@ import 'package:pmsn20232/services/notification_services.dart';
 import 'package:pmsn20232/services/tasks_provider.dart';
 import 'package:pmsn20232/services/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocalStorage.configurePrefs();
-  NotificationService().initNotification();
-
+  // NotificationService().initNotification();
+  WidgetsFlutterBinding.ensureInitialized();
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  const initializationSettingsAndroid =
+      AndroidInitializationSettings('notification_icon');
+  const initializationSettingsIOS = DarwinInitializationSettings();
+  const initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+  );
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation('America/Mexico_City'));
   runApp(const MainApp());
 }
 
@@ -40,6 +56,10 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    // Llama a la función para programar una notificación
+    NotificationService().scheduleNotification(flutterLocalNotificationsPlugin);
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeProvider()),

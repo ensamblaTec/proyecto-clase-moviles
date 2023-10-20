@@ -134,6 +134,7 @@ final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
                   );
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   taskProvider.isUpdated = true;
+                  // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
                   taskProvider.notifyListeners();
                   Navigator.pop(context);
                 })

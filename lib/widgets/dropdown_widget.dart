@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class DropDownWidget extends StatefulWidget {
   String? controller = '';
   List<String> values = [];
@@ -22,7 +23,6 @@ class _DropDownWidgetState extends State<DropDownWidget> {
       padding: const EdgeInsets.all(8),
       child: DropdownButtonFormField<String>(
         value: dropDownValue,
-        dropdownColor: Colors.black87,
         icon: const Icon(Icons.info),
         decoration: InputDecoration(
           prefixIcon: Container(

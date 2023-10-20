@@ -20,6 +20,7 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget createDrawer(BuildContext context) {
+    // Llama a la función para programar una notificación
     final changeTheme = Provider.of<ThemeProvider>(context);
     return Drawer(
       child: ListView(

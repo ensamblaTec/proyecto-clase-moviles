@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/agendadb.dart';
 import 'package:pmsn20232/models/task_model.dart';
-import 'package:pmsn20232/services/tasks_provider.dart';
+import 'package:pmsn20232/services/provider/tasks_provider.dart';
 import 'package:pmsn20232/widgets/dropdown_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';

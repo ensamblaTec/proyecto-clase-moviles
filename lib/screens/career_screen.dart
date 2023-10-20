@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/agendadb.dart';
+import 'package:pmsn20232/models/Career_model.dart';
+import 'package:pmsn20232/services/provider/career_provider.dart';
 import 'package:pmsn20232/widgets/dropdown_widget.dart';
 import 'package:pmsn20232/widgets/filter_text_widget.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +28,7 @@ class _CareerScreenState extends State<CareerScreen> {
     dropDownFilter = DropDownWidget(controller: 'Todo', values: dropDownValues);
     filterText = FilterTextWidget();
   }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +40,7 @@ class _CareerScreenState extends State<CareerScreen> {
                   Navigator.pushNamed(context, '/addCareer')
                       .then((value) => {setState(() {})});
                 },
-                icon: const Icon(Icons.Career))
+                icon: const Icon(Icons.add))
           ],
         ),
         body: Stack(
@@ -51,6 +54,7 @@ class _CareerScreenState extends State<CareerScreen> {
         child: const Icon(Icons.add),
       ),);
   }
+
   void openFilterDialog(context) async {
     await showDialog(
       context: context,
@@ -66,6 +70,7 @@ class _CareerScreenState extends State<CareerScreen> {
       )
     );
   }
+
   FutureBuilder<List<CareerModel>> futureBuilder() {
     final updateCareer = Provider.of<CareerProvider>(context);
     if (updateCareer.isUpdated) {
@@ -73,6 +78,7 @@ class _CareerScreenState extends State<CareerScreen> {
     }
     return filterDataGetting(updateCareer);
   }
+
   FutureBuilder<List<CareerModel>> filterDataGetting(CareerProvider updateCareer) {
     switch(dropDownFilter!.controller) {
       case 'En proceso':
@@ -83,7 +89,7 @@ class _CareerScreenState extends State<CareerScreen> {
         return gettingByStatus(updateCareer, 'P');
       default:
         return FutureBuilder(
-      future: agendaDB!.GETALLCareer(),
+      future: agendaDB!.getAllCareer(),
       builder:
           (BuildContext context, AsyncSnapshot<List<CareerModel>> snapshot) {
         if (updateCareer.isUpdated) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pmsn20232/provider/test_provider.dart';
+import 'package:pmsn20232/services/provider/test_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProviderScreen extends StatelessWidget {

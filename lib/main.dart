@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pmsn20232/assets/styles.dart';
 import 'package:pmsn20232/models/teacher_model.dart';
-import 'package:pmsn20232/provider/test_provider.dart';
+import 'package:pmsn20232/services/provider/career_provider.dart';
+import 'package:pmsn20232/services/provider/test_provider.dart';
 import 'package:pmsn20232/routes/routes.dart';
 import 'package:pmsn20232/screens/dashboard_screen.dart';
 import 'package:pmsn20232/screens/login_screen.dart';
 import 'package:pmsn20232/services/local_storage.dart';
 import 'package:pmsn20232/services/notification_services.dart';
-import 'package:pmsn20232/services/tasks_provider.dart';
-import 'package:pmsn20232/services/teacher_provider.dart';
+import 'package:pmsn20232/services/provider/tasks_provider.dart';
+import 'package:pmsn20232/services/provider/teacher_provider.dart';
 import 'package:pmsn20232/services/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -66,7 +67,8 @@ class _MainAppState extends State<MainApp> {
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
           ChangeNotifierProvider(create: (_) => TaskProvider()),
-          ChangeNotifierProvider(create: (_) => TeacherProvider())
+          ChangeNotifierProvider(create: (_) => TeacherProvider()),
+          ChangeNotifierProvider(create: (_) => CareerProvider()),
         ],
         child: Consumer<ThemeProvider>(builder: (context, model, child) {
           final changeTheme = Provider.of<ThemeProvider>(context);

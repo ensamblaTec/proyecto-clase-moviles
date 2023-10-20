@@ -1,13 +1,13 @@
-class TaskModel {
+class TeacherModel {
   int? idTeacher;
   int? idCarrera;
   String? nameTeacher;
   String? email;
 
-  TaskModel({this.idTeacher, this.nameTeacher, this.email, this.idCarrera});
+  TeacherModel({this.idTeacher, this.nameTeacher, this.email, this.idCarrera});
 
-  factory TaskModel.fromMap(Map<String, dynamic> map) {
-    return TaskModel(
+  factory TeacherModel.fromMap(Map<String, dynamic> map) {
+    return TeacherModel(
       idTeacher: map['idTeacher'],
       nameTeacher: map['nameTeacher'],
       idCarrera: map['idCarrera'],

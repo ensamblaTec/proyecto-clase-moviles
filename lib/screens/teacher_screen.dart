@@ -7,33 +7,27 @@ import 'package:pmsn20232/widgets/dropdown_widget.dart';
 import 'package:pmsn20232/widgets/filter_text_widget.dart';
 import 'package:provider/provider.dart';
 
-// ignore: must_be_immutable
-class TaskScreen extends StatefulWidget {
+class TeacherScreen extends StatefulWidget {
   final String title;
-  List<String> dropDownValues;
-  TaskScreen({super.key, required this.title, required this.dropDownValues});
-
+  const TeacherScreen({super.key, required this.title});
   @override
-  State<TaskScreen> createState() => _TaskScreenState();
+  State<TeacherScreen> createState() => _TeacherScreenState();
 }
 
-class _TaskScreenState extends State<TaskScreen> {
+class _TeacherScreenState extends State<TeacherScreen> {
   AgendaDB? agendaDB;
     List<TaskModel>? selectedUserList = [];
     List<String>? selectedTaskList = [];
     List<String> dropDownValues = [];
     DropDownWidget? dropDownFilter;
     FilterTextWidget? filterText;
-
   @override
   void initState() {
     super.initState();
     agendaDB = AgendaDB();
-    dropDownValues = widget.dropDownValues;
     dropDownFilter = DropDownWidget(controller: 'Todo', values: dropDownValues);
     filterText = FilterTextWidget();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +36,7 @@ class _TaskScreenState extends State<TaskScreen> {
           actions: [
             IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/add')
+                  Navigator.pushNamed(context, '/addTeacher')
                       .then((value) => {setState(() {})});
                 },
                 icon: const Icon(Icons.task))
@@ -59,7 +53,6 @@ class _TaskScreenState extends State<TaskScreen> {
         child: const Icon(Icons.add),
       ),);
   }
-
   void openFilterDialog(context) async {
     await showDialog(
       context: context,
@@ -75,7 +68,6 @@ class _TaskScreenState extends State<TaskScreen> {
       )
     );
   }
-
   FutureBuilder<List<TaskModel>> futureBuilder() {
     final updateTask = Provider.of<TaskProvider>(context);
     if (updateTask.isUpdated) {
@@ -83,9 +75,7 @@ class _TaskScreenState extends State<TaskScreen> {
     }
     return filterDataGetting(updateTask);
   }
-
   FutureBuilder<List<TaskModel>> filterDataGetting(TaskProvider updateTask) {
-
     switch(dropDownFilter!.controller) {
       case 'En proceso':
         return gettingByStatus(updateTask, 'E');
@@ -114,7 +104,6 @@ class _TaskScreenState extends State<TaskScreen> {
       });
     }
   }
-
   FutureBuilder<List<TaskModel>> gettingByStatus(TaskProvider updateTask, String status) {
     return FutureBuilder(
     future: agendaDB!.getTaskByStatus(status),
@@ -127,7 +116,6 @@ class _TaskScreenState extends State<TaskScreen> {
       }
     });
   }
-
   FutureBuilder<List<TaskModel>> gettingByText(TaskProvider updateTask, String nameTask) {
     return FutureBuilder(
     future: agendaDB!.getTaskByText(nameTask),
@@ -140,7 +128,6 @@ class _TaskScreenState extends State<TaskScreen> {
       }
     });
   }
-
   Widget getList(snapshot) {
     if (snapshot.hasData) {
       return Container(
@@ -164,7 +151,6 @@ class _TaskScreenState extends State<TaskScreen> {
       }
     }
   }
-
   Widget buildList(info) {
       return Container(
         margin: const EdgeInsets.fromLTRB(0, 120, 0, 0),

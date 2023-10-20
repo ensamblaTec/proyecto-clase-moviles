@@ -50,6 +50,14 @@ class DashboardScreen extends StatelessWidget {
             },
           ),
           ListTile(
+                title: const Text("Teacher Manager"),
+                leading: const Icon(Icons.account_box_outlined),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () async {
+                  Navigator.pushNamed(context, '/teacher');
+                },
+              ),
+          ListTile(
             leading:  const Icon(Icons.task_alt_outlined),
             trailing: const Icon(Icons.chevron_right),
             title: const Text('Test Provider'),

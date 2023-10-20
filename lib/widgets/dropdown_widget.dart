@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // ignore: must_be_immutable
 class DropDownWidget extends StatefulWidget {
   String? controller = '';
+  int? id = -1;
   List<String> values = [];
   DropDownWidget({super.key, this.controller, required this.values});
 
@@ -37,12 +38,12 @@ class _DropDownWidgetState extends State<DropDownWidget> {
         items: dropDownValues.map<DropdownMenuItem<String>>((String value){
           return DropdownMenuItem<String>(
           value: value,
-          child:Text(value),
+          child: Text(value),
           );
         }).toList(),
          onChanged: (String? newValue){
-          dropDownValue=newValue!;
           widget.controller= newValue;
+          widget.id = dropDownValues.indexOf(newValue!);
          },
         ),
     );

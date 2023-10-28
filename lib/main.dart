@@ -77,7 +77,7 @@ class _MainAppState extends State<MainApp> {
             theme: !changeTheme.isLightTheme
                 ? StylesApp.lightTheme(context)
                 : StylesApp.darkTheme(context),
-            home: isActive ? const DashboardScreen() : LoginScreen(),
+            home: isActive ? const DashboardScreen() : const LoginScreen(),
           );
         }));
   }

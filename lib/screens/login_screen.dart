@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/widgets/checkbox_widget.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

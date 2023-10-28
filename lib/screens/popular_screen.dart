@@ -15,10 +15,10 @@ class _PopularScreenState extends State<PopularScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     apiPopular = ApiPopular();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,18 +28,22 @@ class _PopularScreenState extends State<PopularScreen> {
       body: FutureBuilder(
         future: apiPopular?.getAllPopular(),
         builder: (context, AsyncSnapshot<List<PopularModel>?> snapshot) {
-          if(snapshot.hasData) {
+          if (snapshot.hasData) {
             return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              return itemMovieWidget(snapshot.data![index], context);
-            },
-          );
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return itemMovieWidget(snapshot.data![index], context);
+              },
+            );
           }
-          if(snapshot.hasError) {
-            return const Center(child: Text("Algo salió mal"),);
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text("Algo salió mal"),
+            );
           } else {
-            return const Center(child: CircularProgressIndicator(),);
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
         },
       ),

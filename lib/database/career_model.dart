@@ -7,7 +7,7 @@ class CareerController {
   Future<List<CareerModel>> get() async {
     var conexion = await AgendaDB().database;
     var result = await conexion!.query(tbl);
-    return result.map((task) => CareerModel.fromMap(task)).toList();
+    return result.map((career) => CareerModel.fromMap(career)).toList();
   }
 
   Future<int> insert(Map<String, dynamic> data) async {
@@ -23,8 +23,8 @@ class CareerController {
 
   Future<List<CareerModel>> getCareerByName(String data) async {
     var conexion = await AgendaDB().database;
-    var result =
-        await conexion!.query(tbl, where: "career LIKE ?", whereArgs: [data]);
-    return result.map((task) => CareerModel.fromMap(task)).toList();
+    var result = await conexion!
+        .query(tbl, where: "career LIKE ?", whereArgs: ['%$data%']);
+    return result.map((career) => CareerModel.fromMap(career)).toList();
   }
 }

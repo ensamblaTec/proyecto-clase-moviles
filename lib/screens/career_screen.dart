@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/career_model.dart';
 import 'package:pmsn20232/models/Career_model.dart';
+import 'package:pmsn20232/services/provider/career_provider.dart';
 import 'package:pmsn20232/widgets/cards/card_career_widget.dart';
-import 'package:pmsn20232/widgets/dropdown_widget.dart';
-import 'package:pmsn20232/widgets/filter_text_widget.dart';
+import 'package:pmsn20232/widgets/filter_widget.dart';
+import 'package:provider/provider.dart';
 
 class CareerScreen extends StatefulWidget {
   final String title;
@@ -14,18 +15,15 @@ class CareerScreen extends StatefulWidget {
 
 class _CareerScreenState extends State<CareerScreen> {
   CareerController? careerController;
-  List<CareerModel>? selectedUserList = [];
-  List<String>? selectedCareerList = [];
-  List<String> dropDownValues = [];
-  DropDownWidget? dropDownFilter;
-  FilterTextWidget? filterText;
+  FilterWidget? filterText;
 
   @override
   void initState() {
     super.initState();
     careerController = CareerController();
-    dropDownFilter = DropDownWidget(controller: 'Todo', values: dropDownValues);
-    filterText = FilterTextWidget();
+    filterText = FilterWidget(
+      methodSearch: careerController!.getCareerByName,
+    );
   }
 
   @override
@@ -45,39 +43,25 @@ class _CareerScreenState extends State<CareerScreen> {
       body: Stack(
         children: [
           filterText!,
-          filterText!.txtController.text.isNotEmpty
-              ? getFilterList()
-              : getList()
+          select(context),
         ],
       ), // children: [filtered(context)],
     );
   }
 
-  FutureBuilder<List<CareerModel>> getList() {
-    print("entro sin filtro");
-    return FutureBuilder(
-        future: careerController!.get(),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<CareerModel>> snapshot) {
-          if (snapshot.hasData) {
-            return buildList(snapshot.data);
-          } else {
-            if (snapshot.hasError) {
-              return const Center(
-                child: Text('Error!'),
-              );
-            } else {
-              return const CircularProgressIndicator();
-            }
-          }
-        });
+  FutureBuilder<List<CareerModel>> select(context) {
+    final provider = Provider.of<CareerProvider>(context);
+    if (provider.isUpdated) {
+      return getList();
+    }
+    return getList();
   }
 
-  FutureBuilder<List<CareerModel>> getFilterList() {
-    print("entro filtro");
+  FutureBuilder<List<CareerModel>> getList() {
     return FutureBuilder(
-        future:
-            careerController!.getCareerByName(filterText!.txtController.text),
+        future: filterText!.txtController.text.isEmpty
+            ? careerController!.get()
+            : careerController!.getCareerByName(filterText!.txtController.text),
         builder:
             (BuildContext context, AsyncSnapshot<List<CareerModel>> snapshot) {
           if (snapshot.hasData) {
@@ -101,7 +85,7 @@ class _CareerScreenState extends State<CareerScreen> {
           itemCount: info!.length, //snapshot.data!.length,
           itemBuilder: (BuildContext context, int index) {
             return CardCareerWidget(
-              careerController!, careerModel: info[index],
+              careerController!, careerModel: info![index],
               // CareerModel: info![index],
             );
           }),

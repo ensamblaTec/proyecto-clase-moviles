@@ -4,7 +4,6 @@ import 'package:pmsn20232/models/teacher_model.dart';
 import 'package:pmsn20232/services/provider/teacher_provider.dart';
 import 'package:pmsn20232/widgets/dropdown_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 class AddTeacher extends StatefulWidget {
   const AddTeacher({super.key});

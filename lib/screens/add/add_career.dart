@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/career_model.dart';
-import 'package:pmsn20232/models/Career_model.dart';
-import 'package:pmsn20232/services/provider/teacher_provider.dart';
+import 'package:pmsn20232/models/career_model.dart';
+import 'package:pmsn20232/services/provider/career_provider.dart';
 import 'package:provider/provider.dart';
 
 class AddCareer extends StatefulWidget {
@@ -36,7 +36,7 @@ class _AddCareerState extends State<AddCareer> {
 
   @override
   Widget build(BuildContext context) {
-    final teacherProvider = Provider.of<TeacherProvider>(context);
+    final careerProvider = Provider.of<CareerProvider>(context);
     var data = ModalRoute.of(context)?.settings.arguments;
     if (data != null) {
       verifyIsEditting(data);
@@ -64,9 +64,8 @@ class _AddCareerState extends State<AddCareer> {
                     showCloseIcon: true,
                   );
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  teacherProvider.isUpdated = true;
-                  // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                  teacherProvider.notifyListeners();
+                  careerProvider.isUpdated = true;
+                  // careerProvider.notifyListeners();
                   Navigator.pop(context);
                 })
               : careerController!.update({
@@ -80,7 +79,7 @@ class _AddCareerState extends State<AddCareer> {
                     showCloseIcon: true,
                   );
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  teacherProvider.isUpdated = true;
+                  careerProvider.isUpdated = true;
                   Navigator.pop(context);
                 });
         },

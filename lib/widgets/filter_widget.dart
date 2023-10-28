@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/agendadb.dart';
-import 'package:pmsn20232/models/task_model.dart';
-import 'package:pmsn20232/services/provider/tasks_provider.dart';
+import 'package:pmsn20232/services/provider/career_provider.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class FilterTextWidget extends StatelessWidget {
-  FilterTextWidget({super.key});
-
+class FilterWidget extends StatefulWidget {
+  Function methodSearch;
   TextEditingController txtController = TextEditingController();
-  AgendaDB agendaDB = AgendaDB();
 
-  List<TaskModel> filtered = [];
+  FilterWidget({super.key, required this.methodSearch});
+
+  @override
+  State<FilterWidget> createState() => _FilterWidgetState();
+}
+
+class _FilterWidgetState extends State<FilterWidget> {
+  AgendaDB agendaDB = AgendaDB();
 
   @override
   Widget build(BuildContext context) {
-    final updateTask = Provider.of<TaskProvider>(context);
+    final prov = Provider.of<CareerProvider>(context);
     return Container(
         margin: const EdgeInsets.all(10),
         child: ListView(
@@ -25,19 +29,13 @@ class FilterTextWidget extends StatelessWidget {
                 label: Text('Search Bar'),
                 border: OutlineInputBorder(),
               ),
-              controller: txtController,
+              controller: widget.txtController,
             ),
             ElevatedButton(
               onPressed: () {
-                agendaDB.getTaskByText(txtController.text).then((value) {
-                  if (value.isNotEmpty) {
-                    updateTask.isUpdated = true;
-                    filtered = value;
-                  } else {
-                    updateTask.isUpdated = true;
-                    filtered = [];
-                  }
-                });
+                prov.isUpdated = true;
+                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                prov.notifyListeners();
               },
               child: const Text("Find"),
             )

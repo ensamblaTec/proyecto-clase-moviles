@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pmsn20232/assets/styles.dart';
-import 'package:pmsn20232/models/teacher_model.dart';
 import 'package:pmsn20232/services/provider/career_provider.dart';
-import 'package:pmsn20232/services/provider/test_provider.dart';
 import 'package:pmsn20232/routes/routes.dart';
 import 'package:pmsn20232/screens/dashboard_screen.dart';
 import 'package:pmsn20232/screens/login_screen.dart';
@@ -74,11 +72,12 @@ class _MainAppState extends State<MainApp> {
           final changeTheme = Provider.of<ThemeProvider>(context);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
+            debugShowMaterialGrid: false,
             routes: getRoutes(),
             theme: !changeTheme.isLightTheme
                 ? StylesApp.lightTheme(context)
                 : StylesApp.darkTheme(context),
-            home: isActive ? const DashboardScreen() : const LoginScreen(),
+            home: isActive ? const DashboardScreen() : LoginScreen(),
           );
         }));
   }

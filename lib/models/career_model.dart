@@ -1,6 +1,6 @@
 class CareerModel {
   int? idCareer;
-  int? career;
+  String? career;
 
   CareerModel({this.idCareer, this.career});
 

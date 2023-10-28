@@ -42,7 +42,7 @@ class DashboardScreen extends StatelessWidget {
             onTap: () => {},
           ),
           ListTile(
-            leading:  const Icon(Icons.task_alt_outlined),
+            leading: const Icon(Icons.task_alt_outlined),
             trailing: const Icon(Icons.chevron_right),
             title: const Text('Task Manager'),
             onTap: () {
@@ -50,19 +50,19 @@ class DashboardScreen extends StatelessWidget {
             },
           ),
           ListTile(
-                title: const Text("Teacher Manager"),
-                leading: const Icon(Icons.account_box_outlined),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () async {
-                  Navigator.pushNamed(context, '/teacher');
-                },
-              ),
-          ListTile(
-            leading:  const Icon(Icons.task_alt_outlined),
+            title: const Text("Teacher Manager"),
+            leading: const Icon(Icons.account_box_outlined),
             trailing: const Icon(Icons.chevron_right),
-            title: const Text('Test Provider'),
+            onTap: () async {
+              Navigator.pushNamed(context, '/teacher');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.task_alt_outlined),
+            trailing: const Icon(Icons.chevron_right),
+            title: const Text('Career Manager'),
             onTap: () {
-              Navigator.pushNamed(context, '/prov');
+              Navigator.pushNamed(context, '/career');
             },
           ),
           DayNightSwitcher(
@@ -73,27 +73,28 @@ class DashboardScreen extends StatelessWidget {
             },
           ),
           ListTile(
-                title: const Text("Calendar"),
-                trailing: const Icon(Icons.calendar_today),
-                onTap: () {
-                  Navigator.pushNamed(context, '/calendar');
-                },
-              ),
+            title: const Text("Calendar"),
+            trailing: const Icon(Icons.calendar_today),
+            onTap: () {
+              Navigator.pushNamed(context, '/calendar');
+            },
+          ),
           ListTile(
-                title: const Text("Notification"),
-                trailing: const Icon(Icons.notifications),
-                onTap: () async {
-                  NotificationService().showNotification(title: 'Sample title', body: 'It works!');
-                },
-              ),
+            title: const Text("Notification"),
+            trailing: const Icon(Icons.notifications),
+            onTap: () async {
+              NotificationService()
+                  .showNotification(title: 'Sample title', body: 'It works!');
+            },
+          ),
           ListTile(
-                title: const Text("Sign Out"),
-                trailing: const Icon(Icons.exit_to_app),
-                onTap: () {
-                  Navigator.pushNamed(context, '/login');
-                  LocalStorage.prefs.setBool('isActiveSession', false);
-                },
-              ),
+            title: const Text("Sign Out"),
+            trailing: const Icon(Icons.exit_to_app),
+            onTap: () {
+              Navigator.pushNamed(context, '/login');
+              LocalStorage.prefs.setBool('isActiveSession', false);
+            },
+          ),
         ],
       ),
     );

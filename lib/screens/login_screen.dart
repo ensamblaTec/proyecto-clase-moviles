@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/widgets/checkbox_widget.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  
-
+class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
     final size = MediaQuery.of(context).size;
     return Scaffold(
         // backgroundColor: const Color(0xFFDD969C),
@@ -54,8 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Expanded(
                         child: ElevatedButton(
                             onPressed: () {
-                              if ((emailController.text ==
-                                      "admin") &&
+                              if ((emailController.text == "admin") &&
                                   (passwordController.text == "1234")) {
                                 Navigator.pushNamed(context, '/dash');
                               }

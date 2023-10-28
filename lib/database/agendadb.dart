@@ -12,6 +12,7 @@ class AgendaDB {
   static final versionDB = 1;
 
   static Database? _database;
+
   Future<Database?> get database async {
     if (_database != null) return _database!;
     return _database = await _initDatabase();
@@ -81,11 +82,5 @@ class AgendaDB {
     var result = await conexion!
         .query('tblTareas', where: "nameTask LIKE ?", whereArgs: [nameTask]);
     return result.map((task) => TaskModel.fromMap(task)).toList();
-  }
-
-  Future<List<CareerModel>> getAllCareer() async {
-    var conexion = await database;
-    var result = await conexion!.query('tblCareer');
-    return result.map((career) => CareerModel.fromMap(career)).toList();
   }
 }

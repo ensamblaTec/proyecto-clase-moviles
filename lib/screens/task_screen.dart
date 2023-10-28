@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/agendadb.dart';
 import 'package:pmsn20232/models/task_model.dart';
 import 'package:pmsn20232/services/provider/tasks_provider.dart';
-import 'package:pmsn20232/widgets/card_task_widget.dart';
+import 'package:pmsn20232/widgets/cards/card_task_widget.dart';
 import 'package:pmsn20232/widgets/dropdown_widget.dart';
 import 'package:pmsn20232/widgets/filter_text_widget.dart';
 import 'package:provider/provider.dart';
@@ -19,11 +19,11 @@ class TaskScreen extends StatefulWidget {
 
 class _TaskScreenState extends State<TaskScreen> {
   AgendaDB? agendaDB;
-    List<TaskModel>? selectedUserList = [];
-    List<String>? selectedTaskList = [];
-    List<String> dropDownValues = [];
-    DropDownWidget? dropDownFilter;
-    FilterTextWidget? filterText;
+  List<TaskModel>? selectedUserList = [];
+  List<String>? selectedTaskList = [];
+  List<String> dropDownValues = [];
+  DropDownWidget? dropDownFilter;
+  FilterTextWidget? filterText;
 
   @override
   void initState() {
@@ -37,56 +37,55 @@ class _TaskScreenState extends State<TaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/add')
-                      .then((value) => {setState(() {})});
-                },
-                icon: const Icon(Icons.task))
-          ],
-        ),
-        body: Stack(
-          children: [
-              filterText!,
-              futureBuilder()
-          ],
-        ),         // children: [filtered(context)],
-        floatingActionButton: FloatingActionButton(
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/add')
+                    .then((value) => {setState(() {})});
+              },
+              icon: const Icon(Icons.task))
+        ],
+      ),
+      body: Stack(
+        children: [filterText!, futureBuilder()],
+      ), // children: [filtered(context)],
+      floatingActionButton: FloatingActionButton(
         onPressed: () => openFilterDialog(context),
         child: const Icon(Icons.add),
-      ),);
+      ),
+    );
   }
 
   void openFilterDialog(context) async {
     await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Filter"),
-        content: const Text("Choose option"),
-        actions: [
-          dropDownFilter!,
-          ElevatedButton(onPressed: () => setState(() {
-            Navigator.pop(context);
-          }), child: const Text("OK"),)
-        ],
-      )
-    );
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text("Filter"),
+              content: const Text("Choose option"),
+              actions: [
+                dropDownFilter!,
+                ElevatedButton(
+                  onPressed: () => setState(() {
+                    Navigator.pop(context);
+                  }),
+                  child: const Text("OK"),
+                )
+              ],
+            ));
   }
 
   FutureBuilder<List<TaskModel>> futureBuilder() {
     final updateTask = Provider.of<TaskProvider>(context);
     if (updateTask.isUpdated) {
-    return filterDataGetting(updateTask);
+      return filterDataGetting(updateTask);
     }
     return filterDataGetting(updateTask);
   }
 
   FutureBuilder<List<TaskModel>> filterDataGetting(TaskProvider updateTask) {
-
-    switch(dropDownFilter!.controller) {
+    switch (dropDownFilter!.controller) {
       case 'En proceso':
         return gettingByStatus(updateTask, 'E');
       case 'Completado':
@@ -95,50 +94,52 @@ class _TaskScreenState extends State<TaskScreen> {
         return gettingByStatus(updateTask, 'P');
       default:
         return FutureBuilder(
-      future: agendaDB!.GETALLTASK(),
-      builder:
-          (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
-        if (updateTask.isUpdated) {
-          if(filterText!.filtered.isNotEmpty) {
-            return buildList(filterText!.filtered);
-          } else {
-            return getList(snapshot);
-          }
-        } else {
-          if(filterText!.filtered.isNotEmpty) {
-            return buildList(filterText!.filtered);
-          } else {
-            return getList(snapshot);
-          }
-        }
-      });
+            future: agendaDB!.GETALLTASK(),
+            builder: (BuildContext context,
+                AsyncSnapshot<List<TaskModel>> snapshot) {
+              if (updateTask.isUpdated) {
+                if (filterText!.filtered.isNotEmpty) {
+                  return buildList(filterText!.filtered);
+                } else {
+                  return getList(snapshot);
+                }
+              } else {
+                if (filterText!.filtered.isNotEmpty) {
+                  return buildList(filterText!.filtered);
+                } else {
+                  return getList(snapshot);
+                }
+              }
+            });
     }
   }
 
-  FutureBuilder<List<TaskModel>> gettingByStatus(TaskProvider updateTask, String status) {
+  FutureBuilder<List<TaskModel>> gettingByStatus(
+      TaskProvider updateTask, String status) {
     return FutureBuilder(
-    future: agendaDB!.getTaskByStatus(status),
-    builder:
-        (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
-      if (updateTask.isUpdated) {
-        return getList(snapshot);
-      } else {
-        return getList(snapshot);
-      }
-    });
+        future: agendaDB!.getTaskByStatus(status),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
+          if (updateTask.isUpdated) {
+            return getList(snapshot);
+          } else {
+            return getList(snapshot);
+          }
+        });
   }
 
-  FutureBuilder<List<TaskModel>> gettingByText(TaskProvider updateTask, String nameTask) {
+  FutureBuilder<List<TaskModel>> gettingByText(
+      TaskProvider updateTask, String nameTask) {
     return FutureBuilder(
-    future: agendaDB!.getTaskByText(nameTask),
-    builder:
-        (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
-      if (updateTask.isUpdated) {
-        return getList(snapshot);
-      } else {
-        return getList(snapshot);
-      }
-    });
+        future: agendaDB!.getTaskByText(nameTask),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
+          if (updateTask.isUpdated) {
+            return getList(snapshot);
+          } else {
+            return getList(snapshot);
+          }
+        });
   }
 
   Widget getList(snapshot) {
@@ -166,16 +167,16 @@ class _TaskScreenState extends State<TaskScreen> {
   }
 
   Widget buildList(info) {
-      return Container(
-        margin: const EdgeInsets.fromLTRB(0, 120, 0, 0),
-        child: ListView.builder(
-            itemCount: info!.length, //snapshot.data!.length,
-            itemBuilder: (BuildContext context, int index) {
-              return CardTaskWidget(
-                agendaDB!,
-                taskModel: info![index],
-              );
-            }),
-      );
+    return Container(
+      margin: const EdgeInsets.fromLTRB(0, 120, 0, 0),
+      child: ListView.builder(
+          itemCount: info!.length, //snapshot.data!.length,
+          itemBuilder: (BuildContext context, int index) {
+            return CardTaskWidget(
+              agendaDB!,
+              taskModel: info![index],
+            );
+          }),
+    );
   }
 }

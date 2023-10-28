@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pmsn20232/database/agendadb.dart';
+import 'package:pmsn20232/database/career_model.dart';
 import 'package:pmsn20232/models/Career_model.dart';
-import 'package:pmsn20232/widgets/card_career_widget.dart';
+import 'package:pmsn20232/widgets/cards/card_career_widget.dart';
 import 'package:pmsn20232/widgets/dropdown_widget.dart';
 import 'package:pmsn20232/widgets/filter_text_widget.dart';
 
@@ -13,7 +13,7 @@ class CareerScreen extends StatefulWidget {
 }
 
 class _CareerScreenState extends State<CareerScreen> {
-  AgendaDB? agendaDB;
+  CareerController? careerController;
   List<CareerModel>? selectedUserList = [];
   List<String>? selectedCareerList = [];
   List<String> dropDownValues = [];
@@ -23,7 +23,7 @@ class _CareerScreenState extends State<CareerScreen> {
   @override
   void initState() {
     super.initState();
-    agendaDB = AgendaDB();
+    careerController = CareerController();
     dropDownFilter = DropDownWidget(controller: 'Todo', values: dropDownValues);
     filterText = FilterTextWidget();
   }
@@ -43,50 +43,45 @@ class _CareerScreenState extends State<CareerScreen> {
         ],
       ),
       body: Stack(
-        children: [filterText!, getList()],
+        children: [
+          filterText!,
+          filterText!.txtController.text.isNotEmpty
+              ? getFilterList()
+              : getList()
+        ],
       ), // children: [filtered(context)],
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => openFilterDialog(context),
-        child: const Icon(Icons.add),
-      ),
     );
   }
 
-  void openFilterDialog(context) async {
-    await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: const Text("Filter"),
-              content: const Text("Choose option"),
-              actions: [
-                dropDownFilter!,
-                ElevatedButton(
-                  onPressed: () => setState(() {
-                    Navigator.pop(context);
-                  }),
-                  child: const Text("OK"),
-                )
-              ],
-            ));
-  }
-
   FutureBuilder<List<CareerModel>> getList() {
+    print("entro sin filtro");
     return FutureBuilder(
-        future: agendaDB!.getAllCareer(),
+        future: careerController!.get(),
         builder:
             (BuildContext context, AsyncSnapshot<List<CareerModel>> snapshot) {
           if (snapshot.hasData) {
-            return Container(
-              margin: const EdgeInsets.fromLTRB(0, 120, 0, 0),
-              child: ListView.builder(
-                  itemCount: snapshot.data!.length, //snapshot.data!.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return CardCareerWidget(
-                      agendaDB!,
-                      careerModel: snapshot.data![index],
-                    );
-                  }),
-            );
+            return buildList(snapshot.data);
+          } else {
+            if (snapshot.hasError) {
+              return const Center(
+                child: Text('Error!'),
+              );
+            } else {
+              return const CircularProgressIndicator();
+            }
+          }
+        });
+  }
+
+  FutureBuilder<List<CareerModel>> getFilterList() {
+    print("entro filtro");
+    return FutureBuilder(
+        future:
+            careerController!.getCareerByName(filterText!.txtController.text),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<CareerModel>> snapshot) {
+          if (snapshot.hasData) {
+            return buildList(snapshot.data);
           } else {
             if (snapshot.hasError) {
               return const Center(
@@ -106,7 +101,7 @@ class _CareerScreenState extends State<CareerScreen> {
           itemCount: info!.length, //snapshot.data!.length,
           itemBuilder: (BuildContext context, int index) {
             return CardCareerWidget(
-              agendaDB!, careerModel: info,
+              careerController!, careerModel: info[index],
               // CareerModel: info![index],
             );
           }),

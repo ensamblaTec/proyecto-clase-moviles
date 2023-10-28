@@ -1,40 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:pmsn20232/database/agendadb.dart';
+import 'package:pmsn20232/database/career_model.dart';
 import 'package:pmsn20232/models/Career_model.dart';
-import 'package:pmsn20232/models/teacher_model.dart';
 import 'package:pmsn20232/services/provider/teacher_provider.dart';
-import 'package:pmsn20232/widgets/dropdown_widget.dart';
 import 'package:provider/provider.dart';
 
-class AddTeacher extends StatefulWidget {
-  const AddTeacher({super.key});
+class AddCareer extends StatefulWidget {
+  const AddCareer({super.key});
 
   @override
-  State<AddTeacher> createState() => _AddTeacherState();
+  State<AddCareer> createState() => _AddCareerState();
 }
 
-class _AddTeacherState extends State<AddTeacher> {
+class _AddCareerState extends State<AddCareer> {
   CareerModel? args;
   TextEditingController txtConName = TextEditingController();
-  AgendaDB? agendaDB;
+  CareerController? careerController;
 
   @override
   void initState() {
     super.initState();
-    agendaDB = AgendaDB();
+    careerController = CareerController();
   }
 
   void verifyIsEditting(data) {
-    String stt;
     if (data == null) {
       args = null;
       return;
     }
 
     args = data as CareerModel;
+    txtConName.text = args!.career!;
     txtConName.text =
-        !txtConName.text.isNotEmpty ? args!.nameTeacher! : txtConName.text;
-    }
+        txtConName.text.isNotEmpty ? args!.career! : txtConName.text;
   }
 
   @override
@@ -43,39 +40,22 @@ class _AddTeacherState extends State<AddTeacher> {
     var data = ModalRoute.of(context)?.settings.arguments;
     if (data != null) {
       verifyIsEditting(data);
-    } else {
-      dropDownWidget = DropDownWidget(
-        controller: 'Pendiente',
-        values: const <String>['Pendiente', 'En proceso', 'Completado'],
-      );
     }
 
     final txtNameTeacher = TextFormField(
       cursorColor: Colors.black,
       decoration: const InputDecoration(
-        label: Text('Teacher Name'),
+        label: Text('Career'),
         border: OutlineInputBorder(),
       ),
       controller: txtConName,
     );
 
-    final txtEmailTeacher = TextFormField(
-      decoration: const InputDecoration(
-          label: Text('Email'), border: OutlineInputBorder()),
-      controller: txtConEmail,
-    );
-
-    const space = SizedBox(
-      height: 10,
-    );
-
     final ElevatedButton btnGuardar = ElevatedButton(
         onPressed: () {
           args == null
-              ? agendaDB!.INSERT('teacher', {
-                  'teacher': txtConName.text,
-                  'email': txtConEmail.text,
-                  'idCarrera': dropDownWidget!.id!,
+              ? careerController!.insert({
+                  'career': txtConName.text,
                 }).then((value) {
                   var snackBar = SnackBar(
                     content: Text(value > 0
@@ -89,11 +69,9 @@ class _AddTeacherState extends State<AddTeacher> {
                   teacherProvider.notifyListeners();
                   Navigator.pop(context);
                 })
-              : agendaDB!.UPDATE('teacher', {
-                  'idTeacher': args!.idTeacher,
-                  'teacher': txtConName.text,
-                  'email': txtConEmail.text,
-                  'idCareer': dropDownWidget!.id!,
+              : careerController!.update({
+                  'idCareer': args!.idCareer!,
+                  'career': txtConName.text,
                 }).then((value) {
                   var snackBar = SnackBar(
                     content: Text(value > 0
@@ -106,24 +84,17 @@ class _AddTeacherState extends State<AddTeacher> {
                   Navigator.pop(context);
                 });
         },
-        child: const Text('Save Teacher'));
+        child: const Text('Save Career'));
     return Scaffold(
       appBar: AppBar(
-        title: args == null
-            ? const Text('Add Teacher')
-            : const Text('Update Teacher'),
+        title: Text("${args == null ? 'Add' : 'Update'} Career"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            txtNameTeacher,
-            space,
-            txtEmailTeacher,
-            space,
-            dropDownWidget!,
-            space,
+            Expanded(child: txtNameTeacher),
             btnGuardar,
           ],
         ),

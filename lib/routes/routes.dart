@@ -23,15 +23,15 @@ Map<String, WidgetBuilder> getRoutes() {
             'Todo'
           ],
         ),
+    '/add': (BuildContext context) => const AddTask(),
     '/teacher': (BuildContext context) => const TeacherScreen(
           title: "Teacher Manager",
         ),
+    '/addTeacher': (BuildContext context) => const AddTeacher(),
     '/career': (BuildContext context) => const CareerScreen(
           title: "Career Manager",
         ),
-    '/addCareer': (BuildContext context) => AddCareer(),
-    '/add': (BuildContext context) => const AddTask(),
-    '/addTeacher': (BuildContext context) => const AddTeacher(),
+    '/addCareer': (BuildContext context) => const AddCareer(),
     '/login': (BuildContext context) => const LoginScreen(),
     '/popular': (BuildContext context) => const PopularScreen(),
     '/detail': (BuildContext context) => const DetailMovieScreen(),

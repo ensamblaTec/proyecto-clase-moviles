@@ -10,6 +10,12 @@ class CareerController {
     return result.map((career) => CareerModel.fromMap(career)).toList();
   }
 
+  Future<List<String>> getAllStringName() async {
+    List<String> list =
+        await get().then((value) => value.map((e) => e.career!).toList());
+    return list;
+  }
+
   Future<int> insert(Map<String, dynamic> data) async {
     var conexion = await AgendaDB().database;
     return conexion!.insert(tbl, data);

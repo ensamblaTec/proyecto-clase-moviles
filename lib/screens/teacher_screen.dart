@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pmsn20232/database/agendadb.dart';
-import 'package:pmsn20232/models/task_model.dart';
-import 'package:pmsn20232/services/provider/tasks_provider.dart';
-import 'package:pmsn20232/widgets/cards/card_task_widget.dart';
-import 'package:pmsn20232/widgets/dropdown_widget.dart';
-import 'package:pmsn20232/widgets/filter_text_widget.dart';
+import 'package:pmsn20232/database/teacher_controller.dart';
+import 'package:pmsn20232/models/teacher_model.dart';
+import 'package:pmsn20232/services/provider/teacher_provider.dart';
+import 'package:pmsn20232/widgets/cards/card_teacher_widget.dart';
+import 'package:pmsn20232/widgets/filter_widget.dart';
 import 'package:provider/provider.dart';
 
 class TeacherScreen extends StatefulWidget {
@@ -15,18 +14,14 @@ class TeacherScreen extends StatefulWidget {
 }
 
 class _TeacherScreenState extends State<TeacherScreen> {
-  AgendaDB? agendaDB;
-  List<TaskModel>? selectedUserList = [];
-  List<String>? selectedTaskList = [];
-  List<String> dropDownValues = [];
-  DropDownWidget? dropDownFilter;
-  FilterTextWidget? filterText;
+  TeacherController? teacherController;
+  FilterWidget? filterText;
+
   @override
   void initState() {
     super.initState();
-    agendaDB = AgendaDB();
-    dropDownFilter = DropDownWidget(controller: 'Todo', values: dropDownValues);
-    filterText = FilterTextWidget();
+    teacherController = TeacherController();
+    filterText = FilterWidget();
   }
 
   @override
@@ -40,125 +35,46 @@ class _TeacherScreenState extends State<TeacherScreen> {
                 Navigator.pushNamed(context, '/addTeacher')
                     .then((value) => {setState(() {})});
               },
-              icon: const Icon(Icons.task))
+              icon: const Icon(Icons.add))
         ],
       ),
       body: Stack(
-        children: [filterText!, futureBuilder()],
+        children: [
+          filterText!,
+          select(context),
+        ],
       ), // children: [filtered(context)],
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => openFilterDialog(context),
-        child: const Icon(Icons.add),
-      ),
     );
   }
 
-  void openFilterDialog(context) async {
-    await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: const Text("Filter"),
-              content: const Text("Choose option"),
-              actions: [
-                dropDownFilter!,
-                ElevatedButton(
-                  onPressed: () => setState(() {
-                    Navigator.pop(context);
-                  }),
-                  child: const Text("OK"),
-                )
-              ],
-            ));
-  }
-
-  FutureBuilder<List<TaskModel>> futureBuilder() {
-    final updateTask = Provider.of<TaskProvider>(context);
-    if (updateTask.isUpdated) {
-      return filterDataGetting(updateTask);
+  FutureBuilder<List<TeacherModel>> select(context) {
+    final provider = Provider.of<TeacherProvider>(context);
+    if (provider.isUpdated) {
+      return getList();
     }
-    return filterDataGetting(updateTask);
+    return getList();
   }
 
-  FutureBuilder<List<TaskModel>> filterDataGetting(TaskProvider updateTask) {
-    switch (dropDownFilter!.controller) {
-      case 'En proceso':
-        return gettingByStatus(updateTask, 'E');
-      case 'Completado':
-        return gettingByStatus(updateTask, 'C');
-      case 'Pendiente':
-        return gettingByStatus(updateTask, 'P');
-      default:
-        return FutureBuilder(
-            future: agendaDB!.GETALLTASK(),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<TaskModel>> snapshot) {
-              if (updateTask.isUpdated) {
-                if (filterText!.filtered.isNotEmpty) {
-                  return buildList(filterText!.filtered);
-                } else {
-                  return getList(snapshot);
-                }
-              } else {
-                if (filterText!.filtered.isNotEmpty) {
-                  return buildList(filterText!.filtered);
-                } else {
-                  return getList(snapshot);
-                }
-              }
-            });
-    }
-  }
-
-  FutureBuilder<List<TaskModel>> gettingByStatus(
-      TaskProvider updateTask, String status) {
+  FutureBuilder<List<TeacherModel>> getList() {
     return FutureBuilder(
-        future: agendaDB!.getTaskByStatus(status),
+        future: filterText!.txtController.text.isEmpty
+            ? teacherController!.get()
+            : teacherController!
+                .getTeacherByName(filterText!.txtController.text),
         builder:
-            (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
-          if (updateTask.isUpdated) {
-            return getList(snapshot);
+            (BuildContext context, AsyncSnapshot<List<TeacherModel>> snapshot) {
+          if (snapshot.hasData) {
+            return buildList(snapshot.data);
           } else {
-            return getList(snapshot);
-          }
-        });
-  }
-
-  FutureBuilder<List<TaskModel>> gettingByText(
-      TaskProvider updateTask, String nameTask) {
-    return FutureBuilder(
-        future: agendaDB!.getTaskByText(nameTask),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
-          if (updateTask.isUpdated) {
-            return getList(snapshot);
-          } else {
-            return getList(snapshot);
-          }
-        });
-  }
-
-  Widget getList(snapshot) {
-    if (snapshot.hasData) {
-      return Container(
-        margin: const EdgeInsets.fromLTRB(0, 120, 0, 0),
-        child: ListView.builder(
-            itemCount: snapshot.data!.length, //snapshot.data!.length,
-            itemBuilder: (BuildContext context, int index) {
-              return CardTaskWidget(
-                agendaDB!,
-                taskModel: snapshot.data![index],
+            if (snapshot.hasError) {
+              return const Center(
+                child: Text('Error!'),
               );
-            }),
-      );
-    } else {
-      if (snapshot.hasError) {
-        return const Center(
-          child: Text('Error!'),
-        );
-      } else {
-        return const CircularProgressIndicator();
-      }
-    }
+            } else {
+              return const CircularProgressIndicator();
+            }
+          }
+        });
   }
 
   Widget buildList(info) {
@@ -167,9 +83,9 @@ class _TeacherScreenState extends State<TeacherScreen> {
       child: ListView.builder(
           itemCount: info!.length, //snapshot.data!.length,
           itemBuilder: (BuildContext context, int index) {
-            return CardTaskWidget(
-              agendaDB!,
-              taskModel: info![index],
+            return CardteacherWidget(
+              teacherController!,
+              teacherModel: info![index],
             );
           }),
     );

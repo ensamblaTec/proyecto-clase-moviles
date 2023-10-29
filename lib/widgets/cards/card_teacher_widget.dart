@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:pmsn20232/database/career_controller.dart';
-import 'package:pmsn20232/models/career_model.dart';
-import 'package:pmsn20232/services/provider/career_provider.dart';
+import 'package:pmsn20232/database/teacher_controller.dart';
+import 'package:pmsn20232/models/teacher_model.dart';
+import 'package:pmsn20232/services/provider/teacher_provider.dart';
 import 'package:pmsn20232/utils/messages.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class CardCareerWidget extends StatelessWidget {
-  CareerController careerController;
-  CareerModel careerModel;
-  CardCareerWidget(this.careerController,
-      {super.key, required this.careerModel});
+class CardteacherWidget extends StatelessWidget {
+  TeacherController teacherController;
+  TeacherModel teacherModel;
+  CardteacherWidget(this.teacherController,
+      {super.key, required this.teacherModel});
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<CareerProvider>(context);
+    final provider = Provider.of<TeacherProvider>(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(10),
@@ -25,7 +25,7 @@ class CardCareerWidget extends StatelessWidget {
             textDirection: TextDirection.ltr,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(careerModel.career!),
+              Text(teacherModel.name!),
               const Padding(padding: EdgeInsets.all(2)),
             ],
           ),
@@ -34,7 +34,7 @@ class CardCareerWidget extends StatelessWidget {
             onPressed: () {
               Messages()
                   .deleteMessageConfirm(
-                      context, careerController.delete, careerModel.idCareer)
+                      context, teacherController.delete, teacherModel.idTeacher)
                   .then((value) {
                 provider.isUpdated = !provider.isUpdated;
               });
@@ -43,8 +43,8 @@ class CardCareerWidget extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/addCareer',
-                  arguments: careerModel);
+              Navigator.pushNamed(context, '/addteacher',
+                  arguments: teacherModel);
             },
             icon: const Icon(Icons.edit),
           ),

@@ -7,6 +7,8 @@ import 'package:pmsn20232/screens/dashboard_screen.dart';
 import 'package:pmsn20232/screens/login_screen.dart';
 import 'package:pmsn20232/services/local_storage.dart';
 import 'package:pmsn20232/services/notification_services.dart';
+import 'package:pmsn20232/services/provider/dropDown_provider.dart';
+import 'package:pmsn20232/services/provider/global_provider.dart';
 import 'package:pmsn20232/services/provider/tasks_provider.dart';
 import 'package:pmsn20232/services/provider/teacher_provider.dart';
 import 'package:pmsn20232/services/theme_provider.dart';
@@ -67,6 +69,8 @@ class _MainAppState extends State<MainApp> {
           ChangeNotifierProvider(create: (_) => TaskProvider()),
           ChangeNotifierProvider(create: (_) => TeacherProvider()),
           ChangeNotifierProvider(create: (_) => CareerProvider()),
+          ChangeNotifierProvider(create: (_) => GlobalProvider()),
+          ChangeNotifierProvider(create: (_) => DropDownProvider()),
         ],
         child: Consumer<ThemeProvider>(builder: (context, model, child) {
           final changeTheme = Provider.of<ThemeProvider>(context);

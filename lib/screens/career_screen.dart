@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/career_controller.dart';
 import 'package:pmsn20232/models/career_model.dart';
-import 'package:pmsn20232/services/provider/career_provider.dart';
+import 'package:pmsn20232/services/provider/global_provider.dart';
 import 'package:pmsn20232/widgets/cards/card_career_widget.dart';
 import 'package:pmsn20232/widgets/filter_widget.dart';
 import 'package:provider/provider.dart';
@@ -21,9 +21,7 @@ class _CareerScreenState extends State<CareerScreen> {
   void initState() {
     super.initState();
     careerController = CareerController();
-    filterText = FilterWidget(
-      methodSearch: careerController!.getCareerByName,
-    );
+    filterText = FilterWidget();
   }
 
   @override
@@ -50,7 +48,7 @@ class _CareerScreenState extends State<CareerScreen> {
   }
 
   FutureBuilder<List<CareerModel>> select(context) {
-    final provider = Provider.of<CareerProvider>(context);
+    final provider = Provider.of<GlobalProvider>(context);
     if (provider.isUpdated) {
       return getList();
     }

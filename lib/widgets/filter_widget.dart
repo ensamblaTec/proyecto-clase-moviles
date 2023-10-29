@@ -1,25 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:pmsn20232/database/agendadb.dart';
-import 'package:pmsn20232/services/provider/career_provider.dart';
+import 'package:pmsn20232/services/provider/global_provider.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class FilterWidget extends StatefulWidget {
-  Function methodSearch;
+class FilterWidget extends StatelessWidget {
+  FilterWidget({super.key});
+
   TextEditingController txtController = TextEditingController();
-
-  FilterWidget({super.key, required this.methodSearch});
-
-  @override
-  State<FilterWidget> createState() => _FilterWidgetState();
-}
-
-class _FilterWidgetState extends State<FilterWidget> {
-  AgendaDB agendaDB = AgendaDB();
 
   @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<CareerProvider>(context);
+    final provider = Provider.of<GlobalProvider>(context);
     return Container(
         margin: const EdgeInsets.all(10),
         child: ListView(
@@ -29,11 +20,11 @@ class _FilterWidgetState extends State<FilterWidget> {
                 label: Text('Search Bar'),
                 border: OutlineInputBorder(),
               ),
-              controller: widget.txtController,
+              controller: txtController,
             ),
             ElevatedButton(
               onPressed: () {
-                prov.isUpdated = !prov.isUpdated;
+                provider.isUpdated = !provider.isUpdated;
               },
               child: const Text("Find"),
             )

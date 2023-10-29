@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/career_model.dart';
 import 'package:pmsn20232/models/career_model.dart';
 import 'package:pmsn20232/services/provider/career_provider.dart';
+import 'package:pmsn20232/utils/messages.dart';
 import 'package:provider/provider.dart';
 
 class AddCareer extends StatefulWidget {
@@ -52,38 +53,39 @@ class _AddCareerState extends State<AddCareer> {
     );
 
     final ElevatedButton btnGuardar = ElevatedButton(
-        onPressed: () {
-          args == null
-              ? careerController!.insert({
-                  'career': txtConName.text,
-                }).then((value) {
-                  var snackBar = SnackBar(
-                    content: Text(value > 0
-                        ? 'La Inserción se ha completado'
-                        : 'La Inserción ha fallado'),
-                    showCloseIcon: true,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  careerProvider.isUpdated = true;
-                  // careerProvider.notifyListeners();
-                  Navigator.pop(context);
-                })
-              : careerController!.update({
-                  'idCareer': args!.idCareer!,
-                  'career': txtConName.text,
-                }).then((value) {
-                  var snackBar = SnackBar(
-                    content: Text(value > 0
-                        ? 'La Actualización se ha completado'
-                        : 'La Actualización ha fallado'),
-                    showCloseIcon: true,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  careerProvider.isUpdated = true;
-                  Navigator.pop(context);
-                });
-        },
-        child: const Text('Save Career'));
+      onPressed: () {
+        if (txtConName.text.isEmpty) {
+          Messages().failMessage(Messages().empty, context);
+          return;
+        }
+        args == null
+            ? careerController!.insert({
+                'career': txtConName.text,
+              }).then((value) {
+                if (value > 0) {
+                  Messages().okMessage(Messages().okInsert, context);
+                } else {
+                  Messages().failMessage(Messages().failInsert, context);
+                }
+                careerProvider.isUpdated = !careerProvider.isUpdated;
+                Navigator.pop(context);
+              })
+            : careerController!.update({
+                'idCareer': args!.idCareer!,
+                'career': txtConName.text,
+              }).then((value) {
+                if (value > 0) {
+                  Messages().okMessage(Messages().okUpdate, context);
+                } else {
+                  Messages().failMessage(Messages().failUpdate, context);
+                }
+                careerProvider.isUpdated = !careerProvider.isUpdated;
+                Navigator.pop(context);
+              });
+      },
+      child: const Text('Save Career'),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text("${args == null ? 'Add' : 'Update'} Career"),

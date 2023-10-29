@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
-import 'package:pmsn20232/models/Career_model.dart';
 import 'package:pmsn20232/models/task_model.dart';
 import 'package:sqflite/sqflite.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 
 class AgendaDB {
-  static final nameDB = 'AGENDADB';
-  static final versionDB = 1;
+  static const nameDB = 'AGENDADB';
+  static const versionDB = 1;
 
   static Database? _database;
 

@@ -1,5 +1,5 @@
 import 'package:pmsn20232/database/agendadb.dart';
-import 'package:pmsn20232/models/Career_model.dart';
+import 'package:pmsn20232/models/career_model.dart';
 
 class CareerController {
   String tbl = 'tblCareer';
@@ -19,6 +19,11 @@ class CareerController {
     var conexion = await AgendaDB().database;
     return conexion!.update(tbl, data,
         where: 'idCareer = ?', whereArgs: [data['idCareer']]);
+  }
+
+  Future<int> delete(int id) async {
+    var conexion = await AgendaDB().database;
+    return conexion!.delete(tbl, where: 'idCareer = ?', whereArgs: [id]);
   }
 
   Future<List<CareerModel>> getCareerByName(String data) async {

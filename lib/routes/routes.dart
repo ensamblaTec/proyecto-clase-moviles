@@ -29,10 +29,10 @@ Map<String, WidgetBuilder> getRoutes() {
     '/career': (BuildContext context) => const CareerScreen(
           title: "Career Manager",
         ),
-    '/addCareer': (BuildContext context) => const AddCareer(),
+    '/addCareer': (BuildContext context) => AddCareer(),
     '/add': (BuildContext context) => const AddTask(),
     '/addTeacher': (BuildContext context) => const AddTeacher(),
-    '/login': (BuildContext context) => LoginScreen(),
+    '/login': (BuildContext context) => const LoginScreen(),
     '/popular': (BuildContext context) => const PopularScreen(),
     '/detail': (BuildContext context) => const DetailMovieScreen(),
     '/calendar': (BuildContext context) => const CalendarScreen(),

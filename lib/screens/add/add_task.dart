@@ -16,7 +16,7 @@ class AddTask extends StatefulWidget {
 class _AddTaskState extends State<AddTask> {
   DateTime initSelectedDate = DateTime.now();
   DateTime endSelectedDate = DateTime.now();
-final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+  final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
   Future<void> _selectDateEnd(BuildContext context) async {
     final DateTime? picked = (await showDatePicker(
@@ -65,7 +65,7 @@ final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
       args = null;
       return;
     }
-    
+
     args = data as TaskModel;
     txtConName.text =
         !txtConName.text.isNotEmpty ? args!.nameTask! : txtConName.text;
@@ -86,18 +86,23 @@ final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
       default:
         value = 'Pendiente';
     }
-    dropDownWidget = DropDownWidget(controller: value, values: const <String>['Pendiente', 'En proceso', 'Completado'],);
+    dropDownWidget = DropDownWidget(
+      controller: value,
+      values: const <String>['Pendiente', 'En proceso', 'Completado'],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-
     final taskProvider = Provider.of<TaskProvider>(context);
     var data = ModalRoute.of(context)?.settings.arguments;
     if (data != null) {
       verifyIsEditting(data);
     } else {
-      dropDownWidget = DropDownWidget(controller: 'Pendiente', values: const <String>['Pendiente', 'En proceso', 'Completado'],);
+      dropDownWidget = DropDownWidget(
+        controller: 'Pendiente',
+        values: const <String>['Pendiente', 'En proceso', 'Completado'],
+      );
     }
 
     final txtNameTask = TextFormField(
@@ -123,8 +128,8 @@ final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
                   'nameTask': txtConName.text,
                   'dscTask': txtConDsc.text,
                   'sttTask': dropDownWidget!.controller!.substring(0, 1),
-                  'initDate': initSelectedDate.toString().substring(0,19),
-                  'endDate': endSelectedDate.toString().substring(0,19),
+                  'initDate': initSelectedDate.toString().substring(0, 19),
+                  'endDate': endSelectedDate.toString().substring(0, 19),
                 }).then((value) {
                   var snackBar = SnackBar(
                     content: Text(value > 0
@@ -143,8 +148,8 @@ final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
                   'nameTask': txtConName.text,
                   'dscTask': txtConDsc.text,
                   'sttTask': dropDownWidget!.controller!.substring(0, 1),
-'initDate': initSelectedDate.toString().substring(0,19),
-                  'endDate': endSelectedDate.toString().substring(0,19),
+                  'initDate': initSelectedDate.toString().substring(0, 19),
+                  'endDate': endSelectedDate.toString().substring(0, 19),
                 }).then((value) {
                   var snackBar = SnackBar(
                     content: Text(value > 0
@@ -182,7 +187,7 @@ final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
       ),
     );
   }
-  
+
   Widget buildDateEndSelector(BuildContext context, String title) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -190,8 +195,8 @@ final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
         readOnly:
             true, // Evita que se pueda editar el campo de texto directamente
         controller: TextEditingController(
-          text:
-              dateFormat.format(endSelectedDate), // Muestra la fecha seleccionada
+          text: dateFormat
+              .format(endSelectedDate), // Muestra la fecha seleccionada
         ),
 
         decoration: InputDecoration(
@@ -206,7 +211,7 @@ final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
       ),
     );
   }
-  
+
   Widget buildDateInitSelector(BuildContext context, String title) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -214,8 +219,8 @@ final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
         readOnly:
             true, // Evita que se pueda editar el campo de texto directamente
         controller: TextEditingController(
-          text:
-              dateFormat.format(initSelectedDate), // Muestra la fecha seleccionada
+          text: dateFormat
+              .format(initSelectedDate), // Muestra la fecha seleccionada
         ),
 
         decoration: InputDecoration(

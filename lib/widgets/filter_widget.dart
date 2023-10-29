@@ -33,9 +33,7 @@ class _FilterWidgetState extends State<FilterWidget> {
             ),
             ElevatedButton(
               onPressed: () {
-                prov.isUpdated = true;
-                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                prov.notifyListeners();
+                prov.isUpdated = !prov.isUpdated;
               },
               child: const Text("Find"),
             )

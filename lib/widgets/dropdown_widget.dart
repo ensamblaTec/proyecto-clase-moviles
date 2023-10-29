@@ -39,8 +39,6 @@ class DropDownWidget extends StatelessWidget {
           );
         }).toList(),
         onChanged: (String? newValue) {
-          print(newValue);
-          print(id);
           controller = newValue;
           _id = values!.indexOf(newValue!);
         },

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/agendadb.dart';
+import 'package:pmsn20232/database/teacher_controller.dart';
 import 'package:pmsn20232/models/task_model.dart';
 import 'package:pmsn20232/services/provider/tasks_provider.dart';
+import 'package:pmsn20232/utils/messages.dart';
 import 'package:pmsn20232/widgets/dropdown_widget.dart';
+import 'package:pmsn20232/widgets/text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -14,9 +17,20 @@ class AddTask extends StatefulWidget {
 }
 
 class _AddTaskState extends State<AddTask> {
+  AgendaDB? agendaDB;
+  TaskModel? args;
+  final textName =
+      TxtTextField(placeholder: "Name Task", type: TextInputType.name);
+
+  final textDsc =
+      TxtTextField(placeholder: "Description", type: TextInputType.text);
+
+  DropDownWidget? dropDownWidget;
+  DropDownWidget? dropDownTeacher;
+
+  final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
   DateTime initSelectedDate = DateTime.now();
   DateTime endSelectedDate = DateTime.now();
-  final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
   Future<void> _selectDateEnd(BuildContext context) async {
     final DateTime? picked = (await showDatePicker(
@@ -27,7 +41,6 @@ class _AddTaskState extends State<AddTask> {
 
     if (picked != null && picked != endSelectedDate) {
       setState(() {
-        // print(endSelectedDate.toString().substring(0,19));
         endSelectedDate = picked;
       });
     }
@@ -47,12 +60,6 @@ class _AddTaskState extends State<AddTask> {
     }
   }
 
-  TaskModel? args;
-  TextEditingController txtConName = TextEditingController();
-  TextEditingController txtConDsc = TextEditingController();
-  DropDownWidget? dropDownWidget;
-  AgendaDB? agendaDB;
-
   @override
   void initState() {
     super.initState();
@@ -67,10 +74,8 @@ class _AddTaskState extends State<AddTask> {
     }
 
     args = data as TaskModel;
-    txtConName.text =
-        !txtConName.text.isNotEmpty ? args!.nameTask! : txtConName.text;
-    txtConDsc.text =
-        !txtConDsc.text.isNotEmpty ? args!.dscTask! : txtConDsc.text;
+    textName.controller.text = args!.nameTask!;
+    textDsc.controller.text = args!.dscTask!;
     stt = args!.sttTask!.substring(0, 1);
     var value = '';
     switch (stt) {
@@ -94,7 +99,7 @@ class _AddTaskState extends State<AddTask> {
 
   @override
   Widget build(BuildContext context) {
-    final taskProvider = Provider.of<TaskProvider>(context);
+    final provider = Provider.of<TaskProvider>(context);
     var data = ModalRoute.of(context)?.settings.arguments;
     if (data != null) {
       verifyIsEditting(data);
@@ -105,83 +110,65 @@ class _AddTaskState extends State<AddTask> {
       );
     }
 
-    final txtNameTask = TextFormField(
-      decoration: const InputDecoration(
-          label: Text('Task Name'), border: OutlineInputBorder()),
-      controller: txtConName,
-    );
-
-    final txtDscTask = TextFormField(
-      decoration: const InputDecoration(
-          label: Text('Task Description'), border: OutlineInputBorder()),
-      controller: txtConDsc,
-    );
-
     const space = SizedBox(
       height: 10,
     );
 
     final ElevatedButton btnGuardar = ElevatedButton(
         onPressed: () {
+          if (textName.text.isEmpty || textDsc.text.isEmpty) {
+            Messages().failMessage(Messages().empty, context);
+            return;
+          }
           args == null
               ? agendaDB!.INSERT('tblTareas', {
-                  'nameTask': txtConName.text,
-                  'dscTask': txtConDsc.text,
+                  'nameTask': textName.text,
+                  'dscTask': textDsc.text,
                   'sttTask': dropDownWidget!.controller!.substring(0, 1),
                   'initDate': initSelectedDate.toString().substring(0, 19),
                   'endDate': endSelectedDate.toString().substring(0, 19),
                 }).then((value) {
-                  var snackBar = SnackBar(
-                    content: Text(value > 0
-                        ? 'La Inserción se ha completado'
-                        : 'La Inserción ha fallado'),
-                    showCloseIcon: true,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  taskProvider.isUpdated = true;
-                  // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                  taskProvider.notifyListeners();
+                  if (value > 0) {
+                    Messages().okMessage(Messages().okInsert, context);
+                  } else {
+                    Messages().failMessage(Messages().failInsert, context);
+                  }
+                  provider.isUpdated = !provider.isUpdated;
                   Navigator.pop(context);
                 })
               : agendaDB!.UPDATE('tblTareas', {
                   'idTask': args!.idTask,
-                  'nameTask': txtConName.text,
-                  'dscTask': txtConDsc.text,
+                  'nameTask': textName.text,
+                  'dscTask': textDsc.text,
                   'sttTask': dropDownWidget!.controller!.substring(0, 1),
                   'initDate': initSelectedDate.toString().substring(0, 19),
                   'endDate': endSelectedDate.toString().substring(0, 19),
                 }).then((value) {
-                  var snackBar = SnackBar(
-                    content: Text(value > 0
-                        ? 'La Actualización se ha completado'
-                        : 'La Actualización ha fallado'),
-                    showCloseIcon: true,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  taskProvider.isUpdated = true;
+                  if (value > 0) {
+                    Messages().okMessage(Messages().okUpdate, context);
+                  } else {
+                    Messages().failMessage(Messages().failUpdate, context);
+                  }
+                  provider.isUpdated = !provider.isUpdated;
                   Navigator.pop(context);
                 });
         },
         child: const Text('Save Task'));
     return Scaffold(
       appBar: AppBar(
-        title:
-            args == null ? const Text('Add task') : const Text('Update task'),
+        title: Text("${args == null ? 'Add' : 'Update'} Task"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            txtNameTask,
+            textName,
             space,
-            txtDscTask,
-            space,
-            dropDownWidget!,
-            space,
-            buildDateInitSelector(context, "Fecha Inicial"),
+            textDsc,
             buildDateEndSelector(context, "Fecha Final"),
-            dropDownTeacher!,
+            buildDateInitSelector(context, "Recordatorio"),
+            futureBuilder(),
             btnGuardar,
           ],
         ),
@@ -234,6 +221,35 @@ class _AddTaskState extends State<AddTask> {
         },
         // Añade el sufijo del ícono para indicar que es un campo de fecha
       ),
+    );
+  }
+
+  FutureBuilder<List<String>> futureBuilder() {
+    return FutureBuilder<List<String>>(
+      future: TeacherController()
+          .getAllStringName(), // Llama a tu función que devuelve el Future<List<String>>
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Mientras se carga el Future, muestra un indicador de carga
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          // Si hay un error, muestra un mensaje de error
+          return Text('Error: ${snapshot.error}');
+        } else {
+          // Una vez que el Future se completa con éxito, muestra los datos en un ListView
+          final data = snapshot.data;
+          if (data == null) {
+            dropDownTeacher = DropDownWidget();
+          } else {
+            dropDownTeacher = DropDownWidget(
+              values: data,
+              controller: data[0],
+              labelText: "Teacher",
+            );
+          }
+          return dropDownTeacher!;
+        }
+      },
     );
   }
 }

@@ -181,6 +181,7 @@ class _AddTaskState extends State<AddTask> {
             space,
             buildDateInitSelector(context, "Fecha Inicial"),
             buildDateEndSelector(context, "Fecha Final"),
+            dropDownTeacher!,
             btnGuardar,
           ],
         ),

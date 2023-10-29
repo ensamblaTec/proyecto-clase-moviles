@@ -83,8 +83,8 @@ class _CareerScreenState extends State<CareerScreen> {
           itemCount: info!.length, //snapshot.data!.length,
           itemBuilder: (BuildContext context, int index) {
             return CardCareerWidget(
-              careerController!, careerModel: info![index],
-              // CareerModel: info![index],
+              careerController!,
+              careerModel: info![index],
             );
           }),
     );

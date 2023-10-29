@@ -35,7 +35,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
                 Navigator.pushNamed(context, '/addTeacher')
                     .then((value) => {setState(() {})});
               },
-              icon: const Icon(Icons.add))
+              icon: const Icon(Icons.add)),
         ],
       ),
       body: Stack(

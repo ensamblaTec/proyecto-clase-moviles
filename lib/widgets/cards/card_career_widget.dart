@@ -25,6 +25,7 @@ class CardCareerWidget extends StatelessWidget {
             textDirection: TextDirection.ltr,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text("${careerModel.idCareer!}"),
               Text(careerModel.career!),
               const Padding(padding: EdgeInsets.all(2)),
             ],

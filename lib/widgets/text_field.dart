@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TxtTextField extends StatelessWidget {
-  TxtTextField({super.key, this.placeholder = "Empty"});
+  final TextInputType type;
+  TxtTextField({super.key, this.placeholder = "Empty", required this.type});
   final String? placeholder;
   final TextEditingController controller = TextEditingController();
 
@@ -9,6 +10,7 @@ class TxtTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       cursorColor: Colors.black,
+      keyboardType: type,
       decoration: InputDecoration(
         label: Text(placeholder!),
         border: const OutlineInputBorder(),
@@ -18,4 +20,8 @@ class TxtTextField extends StatelessWidget {
   }
 
   String get text => controller.text;
+
+  set text(String value) {
+    text = value;
+  }
 }

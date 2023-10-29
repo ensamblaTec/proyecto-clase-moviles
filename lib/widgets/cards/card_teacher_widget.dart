@@ -26,6 +26,8 @@ class CardteacherWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(teacherModel.name!),
+              Text(teacherModel.email!),
+              Text("${teacherModel.idCareer!}"),
               const Padding(padding: EdgeInsets.all(2)),
             ],
           ),
@@ -43,7 +45,7 @@ class CardteacherWidget extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/addteacher',
+              Navigator.pushNamed(context, '/addTeacher',
                   arguments: teacherModel);
             },
             icon: const Icon(Icons.edit),

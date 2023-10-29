@@ -10,11 +10,14 @@ class DropDownWidget extends StatelessWidget {
   });
   String labelText;
   String? controller;
-  int? id = -1;
+  int? _id;
   List<String>? values;
 
   @override
   Widget build(BuildContext context) {
+    if (values!.isNotEmpty) {
+      _id = values!.length - 1;
+    }
     return Container(
       padding: const EdgeInsets.all(8),
       child: DropdownButtonFormField<String>(
@@ -36,10 +39,18 @@ class DropDownWidget extends StatelessWidget {
           );
         }).toList(),
         onChanged: (String? newValue) {
+          print(newValue);
+          print(id);
           controller = newValue;
-          id = values!.indexOf(newValue!);
+          _id = values!.indexOf(newValue!);
         },
       ),
     );
+  }
+
+  int get id => _id!;
+
+  set id(int value) {
+    _id = value;
   }
 }

@@ -31,8 +31,6 @@ class _AddCareerState extends State<AddCareer> {
 
     args = data as CareerModel;
     txtConName.text = args!.career!;
-    txtConName.text =
-        txtConName.text.isNotEmpty ? args!.career! : txtConName.text;
   }
 
   @override

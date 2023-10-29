@@ -17,13 +17,17 @@ class AddTeacher extends StatefulWidget {
 
 class _AddTeacherState extends State<AddTeacher> {
   TeacherModel? args;
-
-  TextEditingController txtConName = TextEditingController();
-  TextEditingController txtConEmail = TextEditingController();
-  DropDownWidget? dropDownWidget;
   List<String>? list;
-
+  DropDownWidget? dropDownWidget;
   TeacherController? teacherController;
+
+  final textName = TxtTextField(
+    placeholder: "Name Teacher",
+    type: TextInputType.name,
+  );
+
+  final textEmail =
+      TxtTextField(placeholder: "Email", type: TextInputType.emailAddress);
 
   @override
   void initState() {
@@ -38,11 +42,8 @@ class _AddTeacherState extends State<AddTeacher> {
     }
 
     args = data as TeacherModel;
-    // txtConName.text = args!.name!;
-    txtConName.text =
-        txtConName.text.isNotEmpty ? args!.name! : txtConName.text;
-    txtConEmail.text =
-        txtConEmail.text.isNotEmpty ? args!.email! : txtConName.text;
+    textName.controller.text = args!.name!;
+    textEmail.controller.text = args!.email!;
   }
 
   FutureBuilder<List<String>> futureBuilder() {
@@ -60,13 +61,15 @@ class _AddTeacherState extends State<AddTeacher> {
           // Una vez que el Future se completa con éxito, muestra los datos en un ListView
           final data = snapshot.data;
           if (data == null) {
-            return DropDownWidget();
+            dropDownWidget = DropDownWidget();
+          } else {
+            dropDownWidget = DropDownWidget(
+              values: data,
+              controller: data[0],
+              labelText: "Career",
+            );
           }
-          return DropDownWidget(
-            values: data,
-            controller: data[0],
-            labelText: "Career",
-          );
+          return dropDownWidget!;
         }
       },
     );
@@ -80,24 +83,17 @@ class _AddTeacherState extends State<AddTeacher> {
       verifyIsEditting(data);
     }
 
-    final textName = TxtTextField(
-      placeholder: "Name Teacher",
-    );
-
-    final textEmail = TxtTextField(
-      placeholder: "Email",
-    );
-
     final ElevatedButton btnGuardar = ElevatedButton(
       onPressed: () {
-        if (txtConName.text.isEmpty) {
+        if (textName.text.isEmpty || textEmail.text.isEmpty) {
           Messages().failMessage(Messages().empty, context);
           return;
         }
         args == null
             ? teacherController!.insert({
                 'name': textName.text,
-                'idCareer': dropDownWidget!.id,
+                'idCareer':
+                    (dropDownWidget!.values!.length - dropDownWidget!.id),
                 'email': textEmail.text,
               }).then((value) {
                 if (value > 0) {
@@ -109,8 +105,10 @@ class _AddTeacherState extends State<AddTeacher> {
                 Navigator.pop(context);
               })
             : teacherController!.update({
-                'idCareer': args!.idCareer!,
-                'career': txtConName.text,
+                'idTeacher': args!.idTeacher,
+                'name': textName.text,
+                'email': textEmail.text,
+                'idCareer': dropDownWidget!.id,
               }).then((value) {
                 if (value > 0) {
                   Messages().okMessage(Messages().okUpdate, context);

@@ -27,7 +27,6 @@ class CardteacherWidget extends StatelessWidget {
             children: [
               Text(teacherModel.name!),
               Text(teacherModel.email!),
-              Text("${teacherModel.idCareer!}"),
               const Padding(padding: EdgeInsets.all(2)),
             ],
           ),

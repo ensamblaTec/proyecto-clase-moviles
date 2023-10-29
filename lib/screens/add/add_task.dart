@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pmsn20232/database/agendadb.dart';
 import 'package:pmsn20232/database/teacher_controller.dart';
 import 'package:pmsn20232/models/task_model.dart';
+import 'package:pmsn20232/services/notification_services.dart';
 import 'package:pmsn20232/services/provider/tasks_provider.dart';
 import 'package:pmsn20232/utils/messages.dart';
 import 'package:pmsn20232/widgets/dropdown_widget.dart';
@@ -17,6 +19,8 @@ class AddTask extends StatefulWidget {
 }
 
 class _AddTaskState extends State<AddTask> {
+  // ignore: prefer_final_fields
+  var _currentTime = TimeOfDay.now();
   AgendaDB? agendaDB;
   TaskModel? args;
   final textName =
@@ -28,7 +32,7 @@ class _AddTaskState extends State<AddTask> {
   DropDownWidget? dropDownWidget;
   DropDownWidget? dropDownTeacher;
 
-  final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+  final DateFormat dateFormat = DateFormat('yyyy-MM-dd');
   DateTime initSelectedDate = DateTime.now();
   DateTime endSelectedDate = DateTime.now();
 
@@ -42,20 +46,6 @@ class _AddTaskState extends State<AddTask> {
     if (picked != null && picked != endSelectedDate) {
       setState(() {
         endSelectedDate = picked;
-      });
-    }
-  }
-
-  Future<void> _selectDateInit(BuildContext context) async {
-    final DateTime? picked = (await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(DateTime.now().year - 100),
-        lastDate: DateTime(DateTime.now().year + 1)));
-
-    if (picked != null && picked != initSelectedDate) {
-      setState(() {
-        initSelectedDate = picked;
       });
     }
   }
@@ -120,12 +110,30 @@ class _AddTaskState extends State<AddTask> {
             Messages().failMessage(Messages().empty, context);
             return;
           }
+          final flutterLocalNotificationsPlugin =
+              FlutterLocalNotificationsPlugin();
+          // Llama a la función para programar una notificación
+          NotificationService().scheduleNotification(
+            flutterLocalNotificationsPlugin,
+            initSelectedDate.year,
+            initSelectedDate.month,
+            initSelectedDate.day,
+            _currentTime.hour,
+            _currentTime.minute,
+            textName.text,
+            textDsc.text,
+          );
+
+          String formatDate =
+              "${initSelectedDate.toString().substring(0, 10)} ${_currentTime.hour}:${_currentTime.minute}:00";
+
+          // Llama a la función para programar una notificación
           args == null
               ? agendaDB!.INSERT('tblTareas', {
                   'nameTask': textName.text,
                   'dscTask': textDsc.text,
                   'sttTask': dropDownWidget!.controller!.substring(0, 1),
-                  'initDate': initSelectedDate.toString().substring(0, 19),
+                  'initDate': formatDate,
                   'endDate': endSelectedDate.toString().substring(0, 19),
                 }).then((value) {
                   if (value > 0) {
@@ -168,6 +176,7 @@ class _AddTaskState extends State<AddTask> {
             textDsc,
             buildDateEndSelector(context, "Fecha Final"),
             buildDateInitSelector(context, "Recordatorio"),
+            buildTimeSelector(context, "Hora"),
             futureBuilder(),
             btnGuardar,
           ],
@@ -250,6 +259,54 @@ class _AddTaskState extends State<AddTask> {
           return dropDownTeacher!;
         }
       },
+    );
+  }
+
+  Future<void> _selectDateInit(BuildContext context) async {
+    final DateTime? picked = (await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(DateTime.now().year - 100),
+        lastDate: DateTime(DateTime.now().year + 1)));
+
+    if (picked != null && picked != initSelectedDate) {
+      setState(() {
+        initSelectedDate = picked;
+      });
+    }
+  }
+
+  // Time
+  void callTimePicker() async {
+    var selectedTime = await (showTimePicker(
+      context: context,
+      initialTime: _currentTime,
+      builder: (context, child) => Theme(
+        data: ThemeData.dark(),
+        child: child!,
+      ),
+    ));
+    setState(() {
+      _currentTime = selectedTime!;
+    });
+  }
+
+  Widget buildTimeSelector(BuildContext context, String title) {
+    return TextFormField(
+      readOnly:
+          true, // Evita que se pueda editar el campo de texto directamente
+      controller: TextEditingController(
+        text: _currentTime.format(context), // Muestra la fecha seleccionada
+      ),
+
+      decoration: InputDecoration(
+        labelText: title,
+        suffixIcon: const Icon(Icons.alarm),
+      ),
+      onTap: () {
+        callTimePicker(); // Abre el selector de fecha al tocar en cualquier parte del campo
+      },
+      // Añade el sufijo del ícono para indicar que es un campo de fecha
     );
   }
 }

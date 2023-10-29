@@ -29,8 +29,8 @@ class CardTaskWidget extends StatelessWidget {
                   'Description: ${taskModel.dscTask!.length > 20 ? '${taskModel.dscTask!.substring(0, 20)}...' : taskModel.dscTask!.substring(0, taskModel.dscTask!.length)}'),
               const Padding(padding: EdgeInsets.all(2)),
               Text(taskModel.sttTask!.substring(0, 1)),
-              Text(taskModel.endDate.toString()),
-              Text(taskModel.initDate.toString()),
+              Text("Fecha final: ${taskModel.endDate.toString()}"),
+              Text("Recordatorio: ${taskModel.initDate.toString()}"),
             ],
           ),
           const Expanded(

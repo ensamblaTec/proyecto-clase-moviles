@@ -27,8 +27,7 @@ class NotificationService {
     return const NotificationDetails(
         android: AndroidNotificationDetails('channelId', 'channelName',
             importance: Importance.max),
-        iOS: DarwinNotificationDetails()
-      );
+        iOS: DarwinNotificationDetails());
   }
 
   Future<void> showNotification(
@@ -38,35 +37,42 @@ class NotificationService {
   }
 
   Future<void> scheduleNotification(
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
-  final scheduledDate = tz.TZDateTime(
-    tz.local,
-    2023, // Año
-    10,   // Mes
-    17,   // Día
-    16,   // Hora
-    23,    // Minuto
-  );
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+      int anio,
+      int mes,
+      int dia,
+      int hora,
+      int minuto,
+      String title,
+      String dsc) async {
+    final scheduledDate = tz.TZDateTime(
+      tz.local,
+      anio, // Año
+      mes, // Mes
+      dia, // Día
+      hora, // Hora
+      minuto, // Minuto
+    );
 
-  const androidPlatformChannelSpecifics = AndroidNotificationDetails(
-    'your_channel_id',
-    'your_channel_name',
-  );
-  const iOSPlatformChannelSpecifics = DarwinNotificationDetails();
-  const platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
-  await flutterLocalNotificationsPlugin.zonedSchedule(
-    0, // ID de la notificación
-    'Título de la notificación',
-    'Cuerpo de la notificación',
-    scheduledDate,
-    platformChannelSpecifics,
-    // ignore: deprecated_member_use
-    androidAllowWhileIdle: true,
-    uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
-    matchDateTimeComponents: DateTimeComponents.time,
-  );
-}
-
+    const androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'your_channel_id',
+      'your_channel_name',
+    );
+    const iOSPlatformChannelSpecifics = DarwinNotificationDetails();
+    const platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0, // ID de la notificación
+      title,
+      dsc,
+      scheduledDate,
+      platformChannelSpecifics,
+      // ignore: deprecated_member_use
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+  }
 }

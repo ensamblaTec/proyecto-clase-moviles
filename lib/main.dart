@@ -59,10 +59,6 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-    // Llama a la función para programar una notificación
-    NotificationService().scheduleNotification(flutterLocalNotificationsPlugin);
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeProvider()),

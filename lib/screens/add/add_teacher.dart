@@ -34,7 +34,7 @@ class _AddTeacherState extends State<AddTeacher> {
 
     args = data as TeacherModel;
     txtConName.text =
-        !txtConName.text.isNotEmpty ? args!.nameTeacher! : txtConName.text;
+        !txtConName.text.isNotEmpty ? args!.name! : txtConName.text;
     txtConEmail.text =
         !txtConEmail.text.isNotEmpty ? args!.email! : txtConEmail.text;
     stt = args!.idCarrera! as String;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pmsn20232/database/career_model.dart';
+import 'package:pmsn20232/database/career_controller.dart';
 import 'package:pmsn20232/models/career_model.dart';
 import 'package:pmsn20232/services/provider/career_provider.dart';
 import 'package:pmsn20232/widgets/cards/card_career_widget.dart';

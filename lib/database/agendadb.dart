@@ -37,7 +37,15 @@ class AgendaDB {
       idCareer INTEGER PRIMARY KEY,
       career VARCHAR(50)
     );''';
+    String queryTeacher = '''CREATE TABLE tblTeacher(
+      idTeacher INTEGER PRIMARY KEY,
+      name VARCHAR(50),
+      email VARCHAR(100),
+      idCareer INTEGER,
+      FOREIGN KEY(idCareer) REFERENCES tblCareer(idCareer)
+    );''';
     db.execute(queryCareer);
+    db.execute(queryTeacher);
     db.execute(queryTareas);
   }
 

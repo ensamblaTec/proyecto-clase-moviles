@@ -1,16 +1,16 @@
 class TeacherModel {
   int? idTeacher;
-  int? idCarrera;
-  String? nameTeacher;
+  int? idCareer;
+  String? name;
   String? email;
 
-  TeacherModel({this.idTeacher, this.nameTeacher, this.email, this.idCarrera});
+  TeacherModel({this.idTeacher, this.name, this.email, this.idCareer});
 
   factory TeacherModel.fromMap(Map<String, dynamic> map) {
     return TeacherModel(
       idTeacher: map['idTeacher'],
-      nameTeacher: map['nameTeacher'],
-      idCarrera: map['idCarrera'],
+      name: map['name'],
+      idCareer: map['idCareer'],
       email: map['email'],
     );
   }
@@ -18,9 +18,9 @@ class TeacherModel {
   Map<String, dynamic> getValuesMap() {
     return {
       'idTeacher': idTeacher,
-      'nameTeacher': nameTeacher,
-      'idCarrera': idCarrera,
+      'name': name,
       'email': email,
+      'idCareer': idCareer,
     };
   }
 }

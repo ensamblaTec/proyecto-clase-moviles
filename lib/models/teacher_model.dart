@@ -2,7 +2,8 @@ class TeacherModel {
   int? idTeacher;
   int? idCarrera;
   String? nameTeacher;
-  String? email;
+  String? email
+  
 
   TeacherModel({this.idTeacher, this.nameTeacher, this.email, this.idCarrera});
 

@@ -28,7 +28,13 @@ class AgendaDB {
     String queryMovies = '''CREATE TABLE tblMovies(
     idMovie INTEGER PRIMARY KEY,
     favorite INTEGER,
-    movie VARCHAR(20)
+    movie VARCHAR(20),
+    key VARCHAR(20),
+    actors TEXT,
+    title VARCHAR(100),
+    overview VARCHAR(500),
+    poster_path VARCHAR(100),
+    vote_average REAL
     );''';
     String queryTareas = '''CREATE TABLE tblTareas( 
       idTask INTEGER PRIMARY KEY,

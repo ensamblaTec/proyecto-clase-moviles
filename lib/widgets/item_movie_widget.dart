@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pmsn20232/models/api/popular_model.dart';
 
-Widget itemMovieWidget(PopularModel movie, context) {
+Widget itemMovieWidget(dynamic movie, context, int type) {
   return GestureDetector(
     child: FadeInImage(
       fadeInDuration: const Duration(milliseconds: 500),
@@ -9,6 +8,10 @@ Widget itemMovieWidget(PopularModel movie, context) {
       image:
           NetworkImage('https://image.tmdb.org/t/p/w500/${movie.posterPath}'),
     ),
-    onTap: () => Navigator.pushNamed(context, '/detail', arguments: movie),
+    onTap: () => Navigator.pushNamed(
+      context,
+      type == 1 ? '/detail' : '/detailFavorite',
+      arguments: movie,
+    ),
   );
 }

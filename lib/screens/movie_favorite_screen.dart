@@ -1,39 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:pmsn20232/models/api/popular_model.dart';
-import 'package:pmsn20232/network/api_popular.dart';
+import 'package:pmsn20232/database/movie_controller.dart';
+import 'package:pmsn20232/models/movie_model.dart';
 import 'package:pmsn20232/widgets/item_movie_widget.dart';
 
-class PopularScreen extends StatefulWidget {
-  const PopularScreen({super.key});
+class MovieFavoriteScreen extends StatefulWidget {
+  const MovieFavoriteScreen({super.key});
 
   @override
-  State<PopularScreen> createState() => _PopularScreenState();
+  State<MovieFavoriteScreen> createState() => _MovieFavoriteScreenState();
 }
 
-class _PopularScreenState extends State<PopularScreen> {
-  ApiPopular? apiPopular;
+class _MovieFavoriteScreenState extends State<MovieFavoriteScreen> {
+  MovieController? movieController;
 
   @override
   void initState() {
     super.initState();
-    apiPopular = ApiPopular();
+    movieController = MovieController();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Popular Screen"),
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.pushNamed(context, '/movieFavorite'),
-            icon: const Icon(Icons.star),
-          )
-        ],
+        title: const Text("Favorite Screen"),
       ),
       body: FutureBuilder(
-        future: apiPopular?.getAllPopular(),
-        builder: (context, AsyncSnapshot<List<PopularModel>?> snapshot) {
+        future: movieController?.get(),
+        builder: (context, AsyncSnapshot<List<MovieModel>?> snapshot) {
           if (snapshot.hasData) {
             return GridView.builder(
               padding: const EdgeInsets.all(2),
@@ -45,7 +39,7 @@ class _PopularScreenState extends State<PopularScreen> {
               ),
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                return itemMovieWidget(snapshot.data![index], context, 1);
+                return itemMovieWidget(snapshot.data![index], context, 0);
               },
             );
           }

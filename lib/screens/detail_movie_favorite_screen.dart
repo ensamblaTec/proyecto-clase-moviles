@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/movie_controller.dart';
 import 'package:pmsn20232/models/api/credits_model.dart';
-import 'package:pmsn20232/models/api/popular_model.dart';
 import 'package:pmsn20232/models/movie_model.dart';
 import 'package:pmsn20232/network/api_popular.dart';
 import 'package:pmsn20232/services/provider/detail_movie_provider.dart';
@@ -10,25 +9,24 @@ import 'package:pmsn20232/widgets/actors_widget.dart';
 import 'package:pmsn20232/widgets/youtube_video_widget.dart';
 import 'package:provider/provider.dart';
 
-class DetailMovieScreen extends StatefulWidget {
-  const DetailMovieScreen({super.key});
+class DetailMovieFavoriteScreen extends StatefulWidget {
+  const DetailMovieFavoriteScreen({super.key});
 
   @override
-  State<DetailMovieScreen> createState() => _DetailMovieScreenState();
+  State<DetailMovieFavoriteScreen> createState() =>
+      _DetailMovieFavoriteScreenState();
 }
 
-class _DetailMovieScreenState extends State<DetailMovieScreen> {
-  PopularModel? movie;
-  MovieModel? movieFavorite;
-  String? actors;
+class _DetailMovieFavoriteScreenState extends State<DetailMovieFavoriteScreen> {
+  MovieModel? movie;
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<DetailMovieProvider>(context);
-    movie = ModalRoute.of(context)!.settings.arguments as PopularModel;
-    if (movieFavorite == null) {
-      getMovie(movie!.id!.toString());
+    if (movie == null) {
+      movie = ModalRoute.of(context)!.settings.arguments as MovieModel;
     }
+    print("regresando");
     if (provider.isUpdated) {}
     const textStyle = TextStyle(
       fontSize: 20,
@@ -39,15 +37,14 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              if (movieFavorite == null || movieFavorite!.favorite! == 0) {
-                String idKeyYT = getYTKey(movie!.id!).toString();
+              if (movie == null || movie!.favorite! == 0) {
                 MovieController().insert(
                   {
                     'favorite': 1,
-                    'movie': movie!.id!.toString(),
+                    'movie': movie!.movie!.toString(),
                     'title': movie!.title,
-                    'key': idKeyYT,
-                    'actors': actors,
+                    'key': movie!.keyYT,
+                    'actors': movie!.actors,
                     'overview': movie!.overview,
                     'poster_path': movie!.posterPath,
                     'vote_average': (movie!.voteAverage is String)
@@ -56,10 +53,10 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                   },
                 ).then(
                   (value) {
-                    movieFavorite = MovieModel(
+                    movie = MovieModel(
                       id: value,
                       favorite: 1,
-                      movie: movie!.id!.toString(),
+                      movie: movie!.movie!.toString(),
                     );
                     if (value > 0) {
                       Messages().okMessage(Messages().okInsert, context);
@@ -70,11 +67,12 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                   },
                 );
               } else {
-                movieFavorite!.favorite! == 1 ? 0 : 1;
-                MovieController().delete({"movie": movie!.id}).then(
+                MovieController().deleteByID({"id": movie!.id}).then(
                   (value) {
-                    movieFavorite!.favorite =
-                        movieFavorite!.favorite! == 1 ? 0 : 1;
+                    print(MovieController().get());
+                    print("${movie!.id} -- ------ -- -- --- ${movie!.movie}");
+                    movie!.favorite == 0;
+                    print("${movie!.favorite}");
                     if (value > 0) {
                       Messages().okMessage(Messages().okUpdate, context);
                     } else {
@@ -87,10 +85,8 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
               setState(() {});
             },
             icon: Icon(
-              movieFavorite != null
-                  ? (movieFavorite!.favorite == 1
-                      ? Icons.star
-                      : Icons.star_outline)
+              movie != null
+                  ? (movie!.favorite == 1 ? Icons.star : Icons.star_outline)
                   : Icons.star_outline,
             ),
           ),
@@ -102,7 +98,8 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
             opacity: .5,
             fit: BoxFit.fill,
             image: NetworkImage(
-                'https://image.tmdb.org/t/p/w500/${movie!.posterPath!}'),
+              'https://image.tmdb.org/t/p/w500/${movie!.posterPath!}',
+            ),
           ),
         ),
         child: Padding(
@@ -145,9 +142,10 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                 padding: EdgeInsets.symmetric(vertical: 5),
               ),
               SizedBox(
-                height: 50,
-                child: getActors(movie!.id!),
-              ),
+                  height: 50,
+                  child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: createWidgetsFromInput(movie!.actors!))),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 5),
               ),
@@ -187,78 +185,30 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
     );
   }
 
-  FutureBuilder<List<CreditsModel>> getActors(int id) {
-    return FutureBuilder(
-      future: ApiPopular().getCredits(id),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          // Mientras se carga el Future, muestra un indicador de carga
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          // Si hay un error, muestra un mensaje de error
-          return Text('Error: ${snapshot.error}');
-        } else {
-          // Una vez que el Future se completa con éxito, muestra los datos en un ListView
-          final data = snapshot.data;
-          if (data == null) {
-            return const Center(
-              child: Text("No data found"),
-            );
-          } else {
-            actors = "";
-            final filterActor = data.map((e) {
-              if (e.knownForDepartment! == "Acting") {
-                actors =
-                    "$actors, ${e.name ?? 'no name'}-${e.img ?? 'https://pic.re/image'}";
-                return e;
-              }
-            }).toList();
-            return ListView(
-              scrollDirection: Axis.horizontal,
-              children: filterActor.map((e) {
-                if (e == null) {
-                  return ActorsWidget(
-                    name: 'no name',
-                    img: 'https://pic.re/image',
-                  );
-                }
+  List<Widget> createWidgetsFromInput(String input) {
+    List<String> pairs = input.split(',');
+    List<Widget> widgets = [];
 
-                var img = 'https://pic.re/image';
-                if (e.img != null) {
-                  img = "https://image.tmdb.org/t/p/w500/${e.img}";
-                }
-                var name = 'vacio';
-                if (e.name != null) {
-                  name = "${e.name}";
-                }
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: ActorsWidget(
-                    name: name,
-                    img: img,
-                  ),
-                );
-              }).toList(),
-            );
-          }
-        }
-      },
-    );
-  }
+    for (String pair in pairs) {
+      List<String> parts = pair.split('-');
+      if (parts.length == 2) {
+        String nombre = parts[0];
+        String valor = parts[1];
 
-  Future<void> getMovie(String id) async {
-    final data = await MovieController().getFavoriteByMovieId(id);
-    if (data!.isNotEmpty) {
-      movieFavorite = data[0];
-      setState(() {});
+        // Crea un widget para mostrar el par "nombre-valor"
+        Widget widget = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: ActorsWidget(
+            name: nombre,
+            img: "https://image.tmdb.org/t/p/w500/$valor",
+          ),
+        );
+
+        // Agrega el widget a la lista de widgets
+        widgets.add(widget);
+      }
     }
-  }
 
-  Future<String> getYTKey(int id) async {
-    final data = await ApiPopular().getDetailMovie(id);
-    if (data.isNotEmpty) {
-      movieFavorite!.keyYT = data[0].id!;
-    }
-    return "fO2a-5Wyh0I";
+    return widgets;
   }
 }

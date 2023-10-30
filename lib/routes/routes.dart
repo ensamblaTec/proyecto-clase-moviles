@@ -5,8 +5,10 @@ import 'package:pmsn20232/screens/add/add_teacher.dart';
 import 'package:pmsn20232/screens/calendar_screen.dart';
 import 'package:pmsn20232/screens/career_screen.dart';
 import 'package:pmsn20232/screens/dashboard_screen.dart';
+import 'package:pmsn20232/screens/detail_movie_favorite_screen.dart';
 import 'package:pmsn20232/screens/detail_movie_screen.dart';
 import 'package:pmsn20232/screens/login_screen.dart';
+import 'package:pmsn20232/screens/movie_favorite_screen.dart';
 import 'package:pmsn20232/screens/popular_screen.dart';
 import 'package:pmsn20232/screens/task_screen.dart';
 import 'package:pmsn20232/screens/teacher_screen.dart';
@@ -34,7 +36,10 @@ Map<String, WidgetBuilder> getRoutes() {
     '/addCareer': (BuildContext context) => const AddCareer(),
     '/login': (BuildContext context) => const LoginScreen(),
     '/movie': (BuildContext context) => const PopularScreen(),
+    '/movieFavorite': (BuildContext context) => const MovieFavoriteScreen(),
     '/detail': (BuildContext context) => const DetailMovieScreen(),
+    '/detailFavorite': (BuildContext context) =>
+        const DetailMovieFavoriteScreen(),
     '/calendar': (BuildContext context) => const CalendarScreen(),
   };
 }

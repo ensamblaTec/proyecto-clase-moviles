@@ -27,4 +27,15 @@ class MovieController {
     return conexion!
         .update(tbl, data, where: 'movie = ?', whereArgs: [data['movie']]);
   }
+
+  Future<int> delete(Map<String, dynamic> data) async {
+    var conexion = await AgendaDB().database;
+    return conexion!
+        .delete(tbl, where: 'movie = ?', whereArgs: [data['movie']]);
+  }
+
+  Future<int> deleteByID(Map<String, dynamic> data) async {
+    var conexion = await AgendaDB().database;
+    return conexion!.delete(tbl, where: 'id = ?', whereArgs: [data['id']]);
+  }
 }

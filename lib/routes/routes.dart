@@ -33,7 +33,7 @@ Map<String, WidgetBuilder> getRoutes() {
         ),
     '/addCareer': (BuildContext context) => const AddCareer(),
     '/login': (BuildContext context) => const LoginScreen(),
-    '/popular': (BuildContext context) => const PopularScreen(),
+    '/movie': (BuildContext context) => const PopularScreen(),
     '/detail': (BuildContext context) => const DetailMovieScreen(),
     '/calendar': (BuildContext context) => const CalendarScreen(),
   };

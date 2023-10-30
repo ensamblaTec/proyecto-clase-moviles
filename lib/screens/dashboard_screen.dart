@@ -88,6 +88,13 @@ class DashboardScreen extends StatelessWidget {
             },
           ),
           ListTile(
+            title: const Text("Movie"),
+            trailing: const Icon(Icons.notifications),
+            onTap: () async {
+              Navigator.pushNamed(context, '/movie');
+            },
+          ),
+          ListTile(
             title: const Text("Sign Out"),
             trailing: const Icon(Icons.exit_to_app),
             onTap: () {

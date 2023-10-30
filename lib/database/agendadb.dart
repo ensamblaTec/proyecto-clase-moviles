@@ -25,6 +25,11 @@ class AgendaDB {
   }
 
   FutureOr<void> _createTables(Database db, int version) {
+    String queryMovies = '''CREATE TABLE tblMovies(
+    idMovie INTEGER PRIMARY KEY,
+    favorite INTEGER,
+    movie VARCHAR(20)
+    );''';
     String queryTareas = '''CREATE TABLE tblTareas( 
       idTask INTEGER PRIMARY KEY,
       nameTask VARCHAR(50),
@@ -47,6 +52,7 @@ class AgendaDB {
     db.execute(queryCareer);
     db.execute(queryTeacher);
     db.execute(queryTareas);
+    db.execute(queryMovies);
   }
 
   Future<int> INSERT(String tblName, Map<String, dynamic> data) async {

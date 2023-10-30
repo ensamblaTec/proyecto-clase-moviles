@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:pmsn20232/database/movie_controller.dart';
 import 'package:pmsn20232/models/api/credits_model.dart';
 import 'package:pmsn20232/models/api/popular_model.dart';
+import 'package:pmsn20232/models/movie_model.dart';
 import 'package:pmsn20232/network/api_popular.dart';
+import 'package:pmsn20232/services/provider/detail_movie_provider.dart';
+import 'package:pmsn20232/utils/messages.dart';
 import 'package:pmsn20232/widgets/actors_widget.dart';
+import 'package:provider/provider.dart';
 
 class DetailMovieScreen extends StatefulWidget {
   const DetailMovieScreen({super.key});
@@ -13,48 +18,135 @@ class DetailMovieScreen extends StatefulWidget {
 
 class _DetailMovieScreenState extends State<DetailMovieScreen> {
   PopularModel? movie;
+  MovieModel? movieFavorite;
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<DetailMovieProvider>(context);
     movie = ModalRoute.of(context)!.settings.arguments as PopularModel;
-
+    if (movieFavorite == null) {
+      getMovie(movie!.id!.toString());
+    }
+    if (provider.isUpdated) {}
+    const textStyle = TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+    );
     return Scaffold(
-        appBar: AppBar(
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.filter_list_sharp),
-            ),
-          ],
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              opacity: .8,
-              fit: BoxFit.fill,
-              image: NetworkImage(
-                  'https://image.tmdb.org/t/p/w500/${movie!.posterPath!}'),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              if (movieFavorite == null) {
+                MovieController().insert(
+                  {
+                    'favorite': 1,
+                    'movie': movie!.id!.toString(),
+                  },
+                ).then(
+                  (value) {
+                    movieFavorite = MovieModel(
+                      id: value,
+                      favorite: 1,
+                      movie: movie!.id!.toString(),
+                    );
+                    if (value > 0) {
+                      Messages().okMessage(Messages().okInsert, context);
+                    } else {
+                      Messages().failMessage(Messages().failInsert, context);
+                    }
+                    provider.isUpdated = !provider.isUpdated;
+                  },
+                );
+              } else {
+                MovieController().update(
+                  {
+                    'idMovie': movieFavorite!.id!,
+                    'favorite': movieFavorite!.favorite! == 1 ? 0 : 1,
+                    'movie': movieFavorite!.movie!
+                  },
+                ).then(
+                  (value) {
+                    movieFavorite!.favorite =
+                        movieFavorite!.favorite! == 1 ? 0 : 1;
+                    if (value > 0) {
+                      Messages().okMessage(Messages().okUpdate, context);
+                    } else {
+                      Messages().failMessage(Messages().failUpdate, context);
+                    }
+                    provider.isUpdated = !provider.isUpdated;
+                  },
+                );
+              }
+              setState(() {});
+            },
+            icon: Icon(
+              movieFavorite != null
+                  ? (movieFavorite!.favorite == 1
+                      ? Icons.star
+                      : Icons.star_outline)
+                  : Icons.star_outline,
             ),
           ),
+        ],
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            opacity: .5,
+            fit: BoxFit.fill,
+            image: NetworkImage(
+                'https://image.tmdb.org/t/p/w500/${movie!.posterPath!}'),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
           child: ListView(
             children: [
-              Text("Detail Movie ${movie!.title!}"),
-              Text("Detail Movie ${movie!.overview!}"),
+              Text(
+                movie!.title!,
+                textAlign: TextAlign.center,
+                style: textStyle,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+              ),
+              Text(
+                "Description:\n\n${movie!.overview!}",
+                style: textStyle,
+                textAlign: TextAlign.justify,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 5),
+              ),
               Row(
                 children: [
-                  const Text("Rating: "),
+                  const Text(
+                    "Rating: ",
+                    style: textStyle,
+                  ),
                   calculateRating(movie!.voteAverage!),
                 ],
               ),
-              Row(
-                children: [
-                  const Text("Actors: "),
-                  getActors(movie!.id!),
-                ],
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 5),
               ),
+              const Text(
+                "Actors: ",
+                style: textStyle,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 5),
+              ),
+              SizedBox(
+                height: 50,
+                child: getActors(movie!.id!),
+              )
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget calculateRating(double rating) {
@@ -74,10 +166,10 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
     return Row(
       children: iconData.map((iconData) {
         return Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Icon(
             iconData,
-            size: 48.0,
+            size: 35.0,
             color: Colors.blue,
           ),
         );
@@ -108,29 +200,44 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                 return e;
               }
             }).toList();
-            return ListView.builder(
-              itemCount: filterActor.length,
-              itemBuilder: (BuildContext context, int index) {
-                print(filterActor[index]!.img);
-                print(filterActor[index]!.name);
-                var img = 'https://pic.re/image';
-                if (filterActor[index]!.img != null) {
-                  img =
-                      "https://image.tmdb.org/t/p/w500/${filterActor[index]!.img}";
+            return ListView(
+              scrollDirection: Axis.horizontal,
+              children: filterActor.map((e) {
+                if (e == null) {
+                  return ActorsWidget(
+                    name: 'vacio',
+                    img: 'https://pic.re/image',
+                  );
                 }
 
+                var img = 'https://pic.re/image';
+                if (e.img != null) {
+                  img = "https://image.tmdb.org/t/p/w500/${e.img}";
+                }
+                var name = 'vacio';
+                if (e.name != null) {
+                  name = "${e.name}";
+                }
                 return Padding(
-                  padding: const EdgeInsets.all(3.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: ActorsWidget(
-                    name: filterActor[index]!.name!,
+                    name: name,
                     img: img,
                   ),
                 );
-              },
+              }).toList(),
             );
           }
         }
       },
     );
+  }
+
+  Future<void> getMovie(String id) async {
+    final data = await MovieController().getFavoriteByMovieId(id);
+    if (data!.isNotEmpty) {
+      movieFavorite = data[0];
+      setState(() {});
+    }
   }
 }

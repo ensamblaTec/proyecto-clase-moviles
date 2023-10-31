@@ -36,6 +36,6 @@ class MovieController {
 
   Future<int> deleteByID(Map<String, dynamic> data) async {
     var conexion = await AgendaDB().database;
-    return conexion!.delete(tbl, where: 'id = ?', whereArgs: [data['id']]);
+    return conexion!.delete(tbl, where: 'idMovie = ?', whereArgs: [data['id']]);
   }
 }

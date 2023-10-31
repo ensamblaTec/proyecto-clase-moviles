@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/movie_controller.dart';
-import 'package:pmsn20232/models/api/credits_model.dart';
 import 'package:pmsn20232/models/movie_model.dart';
-import 'package:pmsn20232/network/api_popular.dart';
-import 'package:pmsn20232/services/provider/detail_movie_provider.dart';
+import 'package:pmsn20232/services/provider/detail_movie_favorite_provider.dart';
 import 'package:pmsn20232/utils/messages.dart';
 import 'package:pmsn20232/widgets/actors_widget.dart';
 import 'package:pmsn20232/widgets/youtube_video_widget.dart';
 import 'package:provider/provider.dart';
 
 class DetailMovieFavoriteScreen extends StatefulWidget {
-  const DetailMovieFavoriteScreen({super.key});
+  DetailMovieFavoriteScreen({super.key});
+
+  int favorite = 1;
 
   @override
   State<DetailMovieFavoriteScreen> createState() =>
@@ -22,11 +22,8 @@ class _DetailMovieFavoriteScreenState extends State<DetailMovieFavoriteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<DetailMovieProvider>(context);
-    if (movie == null) {
-      movie = ModalRoute.of(context)!.settings.arguments as MovieModel;
-    }
-    print("regresando");
+    final provider = Provider.of<DetailMovieFavoriteProvider>(context);
+    movie ??= ModalRoute.of(context)!.settings.arguments as MovieModel;
     if (provider.isUpdated) {}
     const textStyle = TextStyle(
       fontSize: 20,
@@ -53,12 +50,9 @@ class _DetailMovieFavoriteScreenState extends State<DetailMovieFavoriteScreen> {
                   },
                 ).then(
                   (value) {
-                    movie = MovieModel(
-                      id: value,
-                      favorite: 1,
-                      movie: movie!.movie!.toString(),
-                    );
                     if (value > 0) {
+                      movie!.id = value;
+                      movie!.favorite = movie!.favorite! == 1 ? 0 : 1;
                       Messages().okMessage(Messages().okInsert, context);
                     } else {
                       Messages().failMessage(Messages().failInsert, context);
@@ -69,10 +63,7 @@ class _DetailMovieFavoriteScreenState extends State<DetailMovieFavoriteScreen> {
               } else {
                 MovieController().deleteByID({"id": movie!.id}).then(
                   (value) {
-                    print(MovieController().get());
-                    print("${movie!.id} -- ------ -- -- --- ${movie!.movie}");
-                    movie!.favorite == 0;
-                    print("${movie!.favorite}");
+                    movie!.favorite = movie!.favorite! == 1 ? 0 : 1;
                     if (value > 0) {
                       Messages().okMessage(Messages().okUpdate, context);
                     } else {

@@ -89,7 +89,7 @@ class DashboardScreen extends StatelessWidget {
           ),
           ListTile(
             title: const Text("Movie"),
-            trailing: const Icon(Icons.notifications),
+            trailing: const Icon(Icons.movie),
             onTap: () async {
               Navigator.pushNamed(context, '/movie');
             },

@@ -38,8 +38,7 @@ Map<String, WidgetBuilder> getRoutes() {
     '/movie': (BuildContext context) => const PopularScreen(),
     '/movieFavorite': (BuildContext context) => const MovieFavoriteScreen(),
     '/detail': (BuildContext context) => const DetailMovieScreen(),
-    '/detailFavorite': (BuildContext context) =>
-        const DetailMovieFavoriteScreen(),
+    '/detailFavorite': (BuildContext context) => DetailMovieFavoriteScreen(),
     '/calendar': (BuildContext context) => const CalendarScreen(),
   };
 }

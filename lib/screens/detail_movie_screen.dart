@@ -71,7 +71,7 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                 );
               } else {
                 movieFavorite!.favorite! == 1 ? 0 : 1;
-                MovieController().delete({"movie": movie!.id}).then(
+                MovieController().delete({"movie": movie!.id!}).then(
                   (value) {
                     movieFavorite!.favorite =
                         movieFavorite!.favorite! == 1 ? 0 : 1;

@@ -7,6 +7,7 @@ import 'package:pmsn20232/screens/dashboard_screen.dart';
 import 'package:pmsn20232/screens/login_screen.dart';
 import 'package:pmsn20232/services/local_storage.dart';
 import 'package:pmsn20232/services/notification_services.dart';
+import 'package:pmsn20232/services/provider/detail_movie_favorite_provider.dart';
 import 'package:pmsn20232/services/provider/detail_movie_provider.dart';
 import 'package:pmsn20232/services/provider/dropDown_provider.dart';
 import 'package:pmsn20232/services/provider/global_provider.dart';
@@ -69,6 +70,7 @@ class _MainAppState extends State<MainApp> {
           ChangeNotifierProvider(create: (_) => GlobalProvider()),
           ChangeNotifierProvider(create: (_) => DropDownProvider()),
           ChangeNotifierProvider(create: (_) => DetailMovieProvider()),
+          ChangeNotifierProvider(create: (_) => DetailMovieFavoriteProvider()),
         ],
         child: Consumer<ThemeProvider>(builder: (context, model, child) {
           final changeTheme = Provider.of<ThemeProvider>(context);

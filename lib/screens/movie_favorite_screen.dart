@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/database/movie_controller.dart';
 import 'package:pmsn20232/models/movie_model.dart';
+import 'package:pmsn20232/services/provider/detail_movie_favorite_provider.dart';
 import 'package:pmsn20232/widgets/item_movie_widget.dart';
+import 'package:provider/provider.dart';
 
 class MovieFavoriteScreen extends StatefulWidget {
   const MovieFavoriteScreen({super.key});
@@ -21,6 +23,8 @@ class _MovieFavoriteScreenState extends State<MovieFavoriteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<DetailMovieFavoriteProvider>(context);
+    if (provider.isUpdated) {}
     return Scaffold(
       appBar: AppBar(
         title: const Text("Favorite Screen"),
